@@ -11,14 +11,7 @@ import org.lwjgl.input.Keyboard;
 
 public class KeepSprint extends VModule {
     public KeepSprint() {
-        super(InputConstants.KEY_F,"KeepSprint", Category.Movement);
-    }
-
-    @Override
-    public void onUpdate(EventUpdate event) {
-        super.onUpdate(event);
-        Minecraft.getInstance().getWindow().setTitle("钓鱼岛-我们修复了疾跑");
-        mc.player.setSprinting(true);
-
+        super(InputConstants.KEY_F, "KeepSprint", Category.Movement);
     }
 }
+

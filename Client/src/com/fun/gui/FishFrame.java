@@ -16,6 +16,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class FishFrame extends JFrame {
 
@@ -50,12 +53,24 @@ public class FishFrame extends JFrame {
     }
 
 
+    public static String generateRandomString(int length) {
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++) {
+            int index = random.nextInt(characters.length());
+            sb.append(characters.charAt(index));
+        }
+
+        return sb.toString();
+    }
 
     public void initFrame(){
 
         settings=new DefaultMutableTreeNode("Settings");
         settingsTree=new JTree(settings);
-        setTitle("Fish"+Agent.VERSION);
+        setTitle(generateRandomString(16));//"Fish"+Agent.VERSION
         setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico.png")).getImage());
         System.out.println("Frame Init");
         Container container=getContentPane();

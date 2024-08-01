@@ -80,7 +80,7 @@ rule CUSTOM_COMMAND
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = "C:\Program Files\JetBrains\CLion 2024.1.3\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -SD:\FengeGG\Fish\injector -BD:\FengeGG\Fish\injector\cmake-build-debug
+  command = "C:\Program Files\JetBrains\CLion 2024.1.3\bin\cmake\win\x64\bin\cmake.exe" --regenerate-during-build -SD:\LLbetoFun\Fish\injector -BD:\LLbetoFun\Fish\injector\cmake-build-debug
   description = Re-running CMake...
   generator = 1
 

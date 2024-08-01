@@ -610,7 +610,7 @@ DWORD WINAPI start(){
     jint num = JNI_GetCreatedJavaVMs(&java.vm, 1, NULL);
     if ((*java.vm)->GetEnv(java.vm,(void**)&java.jniEnv, JNI_VERSION_1_8) == JNI_EDETACHED) {
         MessageBoxA(NULL,"GetEnv","Fish",0);
-        (*java.vm)->AttachCurrentThreadAsDaemon(java.vm,(void**)&java.jniEnv, NULL);
+        (*java.vm)->AttachCurrentThreadAsDaemon(java.vm,(void**)NULL, NULL);
     }
 
     jint num1=(*java.vm)->GetEnv(java.vm, (void **) (&java.jvmtiEnv),JVMTI_VERSION);

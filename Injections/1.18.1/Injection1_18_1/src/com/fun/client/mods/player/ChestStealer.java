@@ -39,10 +39,10 @@ public class ChestStealer extends VModule {
             Set<Integer> set=itemStackMap.keySet();
             List<Object> list=Arrays.asList(set.toArray());
             Collections.shuffle(list);
-            if(timer.passedMs((long) ((long) delay.getValDouble()+Math.random()*50L-25))){
+            if(timer.every((long) ((long) delay.getValDouble()+Math.random()*50L-25))){
                 mc.gameMode.handleInventoryMouseClick(chest.containerId,(int)list.get(0),0, QUICK_MOVE, mc.player);
             }
-            //ItemStack itemStack=chest.getSlot((Integer) list.get(0)).getItem();
+            //ItemStack itemStack=chest.getSlot((In teger) list.get(0)).getItem();
 
         }
     }

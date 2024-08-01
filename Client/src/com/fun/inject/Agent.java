@@ -238,17 +238,7 @@ public class Agent {
 
     public static boolean b;
     public static boolean b1;
-    public static void _(){
-        if(isAgent||!b){
-            System.out.println("jii");
-        }
-        else if(b1){
-            System.out.println("j22");
-        }
-        else{
-            System.out.println("j23");
-        }
-    }
+
     public static void getVersion(){
         TCPClient.send(Main.SERVERPORT,new PacketMCVer(null));
         try {

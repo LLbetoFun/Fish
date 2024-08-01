@@ -17,7 +17,7 @@ public class KeepSprint extends VModule {
     @Override
     public void onUpdate(EventUpdate event) {
         super.onUpdate(event);
-        Minecraft.getInstance().getWindow().setTitle("钓鱼岛-我们修复了疾跑");
+        //Minecraft.getInstance().getWindow().setTitle("钓鱼岛-我们修复了疾跑");
         mc.player.setSprinting(true);
 
     }

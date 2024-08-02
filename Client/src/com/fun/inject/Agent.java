@@ -265,10 +265,15 @@ public class Agent {
             Definer.defineClass(s);
         }
     }
+    public static void startInjectThread(){
+        new Thread(Agent::inject).start();
+    }
+    public static native void inject();
     public static synchronized void start() throws URISyntaxException, IOException, InterruptedException {
                 //if(true)throw new RuntimeException("hehe");
                 isAgent =true;
                 System.out.println("attached!!");
+                //if(true)return;
 
                 File f=new File(System.getProperty("user.home")+"\\fish.txt");
                 BufferedReader bufferedreader = new BufferedReader(new FileReader(f));

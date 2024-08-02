@@ -32,17 +32,14 @@ public class AimBot extends VModule {
         }
     }
 
-    private Vector2f aim(Vec3 player, Vec3 target) {
+    public static Vector2f aim(Vec3 player, Vec3 target) {
         double x = target.x - player.x;
         double z = target.z - player.z;
         double xx = x * x;
         double zz = z * z;
         double xz = Math.sqrt(xx + zz);
 
-        // 获取速度设置的百分比值
-        double speedPercent = ((double) speed.getValDouble()) / 100.0;
-
-        return new Vector2f(-(float) (Math.atan2(target.y - player.y, xz) / (Math.PI / 180) * speedPercent),
-                -(float) (Math.atan2(target.x - player.x, target.z - player.z) / (Math.PI / 180) * speedPercent));
+        return new Vector2f(-(float) (Math.atan2(target.y - player.y, xz) / (Math.PI / 180)),
+                -(float) (Math.atan2(target.x - player.x, target.z - player.z) / (Math.PI / 180)));
     }
 }

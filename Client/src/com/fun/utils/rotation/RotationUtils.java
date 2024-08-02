@@ -85,7 +85,8 @@ public class RotationUtils {
 
     //}
     public static Rotation limitAngleChange(final Rotation currentRotation, final Rotation targetRotation,final float turnSpeed) {
-        float yawDifference = getAngleDifference(targetRotation.getYaw(), currentRotation.getYaw());
+        float yawDifference = getAngleDifference(targetRotation.
+                getYaw(), currentRotation.getYaw());
         float pitchDifference = getAngleDifference(targetRotation.getPitch(), currentRotation.getPitch());
 
         return new Rotation(

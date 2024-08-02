@@ -213,22 +213,22 @@ extern JNIEXPORT jobject JNICALL Java_fun_inject_NativeUtils_getAllLoadedClasses
     return list;
 
 }
-extern JNIEXPORT int JNICALL printEx(){
-    if((*Java->jniEnv)->ExceptionCheck(Java->jniEnv)){
-        jthrowable e=(*Java->jniEnv)->ExceptionOccurred((Java->jniEnv));
-        jclass e_class=(*Java->jniEnv)->GetObjectClass(Java->jniEnv,e);
-        jmethodID e_toString_methodID = (*Java->jniEnv)->GetMethodID(Java->jniEnv, e_class, "toString", "()Ljava/lang/String;");
+extern JNIEXPORT int JNICALL printEx(JAVA* java){
+    if((*java->jniEnv)->ExceptionCheck(java->jniEnv)){
+        jthrowable e=(*java->jniEnv)->ExceptionOccurred((java->jniEnv));
+        jclass e_class=(*java->jniEnv)->GetObjectClass(java->jniEnv,e);
+        jmethodID e_toString_methodID = (*java->jniEnv)->GetMethodID(java->jniEnv, e_class, "toString", "()Ljava/lang/String;");
 
 
 
-        jstring e_string_object = (*Java->jniEnv)->CallObjectMethod(Java->jniEnv, e, e_toString_methodID);
+        jstring e_string_object = (*java->jniEnv)->CallObjectMethod(java->jniEnv, e, e_toString_methodID);
 
 
 
-        MessageBoxA(NULL,(*Java->jniEnv)->GetStringUTFChars(Java->jniEnv, e_string_object, NULL),"FishCient",0);
+        MessageBoxA(NULL,(*java->jniEnv)->GetStringUTFChars(java->jniEnv, e_string_object, NULL),"FishCient",0);
         //MessageBoxA(NULL,buffer,"Fish",0);
 
-        (*Java->jniEnv)->ExceptionClear(Java->jniEnv);
+        (*java->jniEnv)->ExceptionClear(java->jniEnv);
         return 1;
     }
     return 0;
@@ -371,69 +371,35 @@ JNIEXPORT jclass JNICALL DefineClass(JNIEnv *env, jclass _, jobject classLoader,
                                                     (*env)->GetArrayLength(env, bytes));
     return (jclass)classDefined;
 }
+extern JAVA JNICALL GetJAVA(JNIEnv *env){
+    JAVA java;
+    java.jniEnv=env;
+    HMODULE hJvm = GetModuleHandle("jvm.dll");
+
+    typedef jint(JNICALL *fnJNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *);
+    fnJNI_GetCreatedJavaVMs JNI_GetCreatedJavaVMs;
+    JNI_GetCreatedJavaVMs = (fnJNI_GetCreatedJavaVMs) GetProcAddress(hJvm,
+                                                                     "JNI_GetCreatedJavaVMs");
+
+    jint num = JNI_GetCreatedJavaVMs(&java.vm, 1, NULL);
+
+    jint num1=(*java.vm)->GetEnv(java.vm, (void **) (&java.jvmtiEnv),JVMTI_VERSION);
+    char *errc = (char *) allocate(4);
+
+    if(!java.vm)MessageBoxA(NULL, itoa(num,errc,10),"FishCient",0);
+    if(!java.jvmtiEnv)MessageBoxA(NULL,itoa(num1,errc,10),"FishCient",0);
+    return java;
+
+}
 
 
 extern DWORD JNICALL Inject(JAVA java){
     //MessageBoxA(NULL,"Inject","Fish",0);
     Java = &java;
 
-    jclass system=(*Java->jniEnv)->FindClass(Java->jniEnv,"java/lang/System");
-    jmethodID getEnv=(*Java->jniEnv)->GetStaticMethodID(Java->jniEnv,system,"getProperty","(Ljava/lang/String;)Ljava/lang/String;");
 
-    jstring appdata=(*Java->jniEnv)->CallStaticObjectMethod(Java->jniEnv,system,getEnv,(*Java->jniEnv)->NewStringUTF(Java->jniEnv,"user.home"));
-    char *fileName;
-    fileName=(char*)(*Java->jniEnv)->GetStringUTFChars(Java->jniEnv,appdata,NULL);
-
-
-
-    strcat(fileName, "\\fish.txt");
-
-    FILE *read_file = fopen(fileName, "r");
-    if (read_file == NULL) {
-
-        perror("[Fish]Error opening file for reading");
-        MessageBoxA(NULL,fileName,"Fish",0);
-        return 1;
-    }
-
-    char buffer[1024];
-    while (fgets(buffer, sizeof(buffer), read_file)) {
-        //MessageBoxA(NULL,buffer,"Fish",0);
-    }
-
-    fclose(read_file); // 关闭读取文件
-
-
-
-    /*char *c = (char *) allocate(4);
-    jvmtiError error=(*Java->jvmtiEnv)->AddToSystemClassLoaderSearch(Java->jvmtiEnv,buffer);
-    //jclass URLClassLoader = (*Java->jniEnv)->FindClass(Java->jniEnv, "java/net/URLClassLoader");
-
-
-    if (error) {
-        MessageBoxA(NULL, itoa(error, c, 10), "Fish", 0);
-        MessageBoxA(NULL,buffer,"Fish",0);
-
-        //loadJar(java.jniEnv, dirName, NULL,false);
-    }
-    free(c);*/
-    //MessageBoxA(NULL,"Start ADDURL","Fish",0);
-    //MessageBoxA(NULL,"Start ADDURL","Fish",0);
-    //(*java.jvmtiEnv)->AddToBootstrapClassLoaderSearch(java.jvmtiEnv,buffer);//loadJarToSystemClassLoader(buffer);
-
-    (*java.jvmtiEnv)->AddToSystemClassLoaderSearch(java.jvmtiEnv,buffer);//loadJarToSystemClassLoader(buffer);
-    //MessageBoxA(NULL,"Start ADDURL SUCCESSFUL","Fish",0);
-    if(printEx()){
-        return 0;
-    }
-
-    //
-
-    //MessageBoxA(NULL, "JNI_OnLoad3", "FunGhostClient", 0);
-    jclass nativeUtils = //(*Java->jniEnv)->FindClass(Java->jniEnv,"com/fun/inject/NativeUtils");
-    findClass(Java->jniEnv, "com.fun.inject.NativeUtils");
-    if(printEx()){
-        MessageBoxA(NULL,buffer,"Fish",0);
+    jclass nativeUtils = findClass(Java->jniEnv, "com.fun.inject.NativeUtils");
+    if(printEx(&java)){
         return 0;
     }
 
@@ -442,7 +408,6 @@ extern DWORD JNICALL Inject(JAVA java){
 
 
 
-    //(Java->jvmtiEnv)->GetCapabilities(capabilities);
     capabilities.can_get_bytecodes = 1;
     capabilities.can_redefine_classes = 1;
     capabilities.can_redefine_any_class = 1;
@@ -499,9 +464,41 @@ extern DWORD JNICALL Inject(JAVA java){
 }
 
 
+extern void JNICALL Java_Inject(JNIEnv* env,jclass _){
+    Inject(GetJAVA(env));
+}
 
+extern void JNICALL Load(JAVA* java){
+    jclass system=(*java->jniEnv)->FindClass(java->jniEnv,"java/lang/System");
+    jmethodID getEnv=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,system,"getProperty","(Ljava/lang/String;)Ljava/lang/String;");
 
+    jstring appdata=(*java->jniEnv)->CallStaticObjectMethod(java->jniEnv,system,getEnv,(*java->jniEnv)->NewStringUTF(java->jniEnv,"user.home"));
+    char *fileName;
+    fileName=(char*)(*java->jniEnv)->GetStringUTFChars(java->jniEnv,appdata,NULL);
+    strcat(fileName, "\\fish.txt");
 
+    FILE *read_file = fopen(fileName, "r");
+    if (read_file == NULL) {
+
+        perror("[Fish]Error opening file for reading");
+        MessageBoxA(NULL,fileName,"Fish",0);
+    }
+
+    char buffer[1024];
+    while (fgets(buffer, sizeof(buffer), read_file)) {
+    }
+    fclose(read_file); // 关闭读取文件
+    (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,buffer);
+    printEx(java);
+    jclass agent =
+            findClass(java->jniEnv, "com.fun.inject.Agent");
+    JNINativeMethod methods[] = {
+            {"inject","()V",(void*) Java_Inject}
+    };
+    if(agent)(*java->jniEnv)->RegisterNatives(java->jniEnv,agent, methods, 1);
+    jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"startInjectThread","()V");
+    (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
+}
 
 extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
         JAVA java;
@@ -522,14 +519,9 @@ extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
         if(!java.jvmtiEnv)MessageBoxA(NULL,itoa(num1,errc,10),"FishCient",0);
 
 
-    //*jniEnv = *java.jniEnv;
-        //MessageBoxA(NULL,"INJECTED","FishCient",0);
-        //MessageBoxA(NULL, "JNI_OnLoad2", "FunGhostClient", 0);
-        Inject(java);//CreateThread(NULL,4096,(LPTHREAD_START_ROUTINE)&Inject,NULL,0,NULL);
+        Load(&java);
 
-//typedef void(*Java_org_lwjgl_system_JNI_callP__J)(JNIEnv* env, jclass clazz, jlong lVar);
-//
-//Java_org_lwjgl_system_JNI_callP__J nglFlush = NULL;
+        //Inject(java);
 
         return 0;
 
@@ -623,6 +615,7 @@ DWORD WINAPI start(){
     //*jniEnv = *java.jniEnv;
     //MessageBoxA(NULL,"INJECTED","FishCient",0);
     //MessageBoxA(NULL, "JNI_OnLoad2", "FunGhostClient", 0);
+    Load(&java);
     Inject(java);//CreateThread(NULL,4096,(LPTHREAD_START_ROUTINE)&Inject,NULL,0,NULL);
     (*Java->vm)->DetachCurrentThread(Java->vm);
 

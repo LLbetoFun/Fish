@@ -1,13 +1,13 @@
 package com.fun.client.mods.combat;
 
+import com.fun.client.mods.Category;
+import com.fun.client.mods.Module;
 import com.fun.client.settings.Setting;
 import com.fun.eventapi.event.events.EventAttackReach;
 import com.fun.eventapi.event.events.EventBlockReach;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Random;
-import com.fun.client.mods.Category;
-import com.fun.client.mods.Module;
 
 public class Reach extends Module {
     private final Random random = new Random();
@@ -20,7 +20,7 @@ public class Reach extends Module {
     public Setting sprintCheck = new Setting("SprintCheck", this, true);
     public Setting chance = new Setting("Chance", this, 100.0, 0.0, 100.0, true);
     public Setting verticalCheck = new Setting("VerticalCheck", this, true);
-    public Setting verticalAngle = new Setting("VerticalAngle", this, 45.0, 0.0, 90.0, true);
+    public Setting verticalAngle = new Setting("VerticalAngle", this, 45.0, 0.0, 60.0, true);
     public Setting waterCheck = new Setting("WaterCheck", this, true);
 
     public Reach() {
@@ -58,13 +58,7 @@ public class Reach extends Module {
     private void updateRandomRange() {
         double min = rangeMin.getValDouble();
         double max = rangeMax.getValDouble();
-        double probability = 0.8;
-
-        if (random.nextDouble() < probability) {
-            currentRange = min;
-        } else {
-            currentRange = min + (max - min) * random.nextDouble();
-        }
+        currentRange = min + (max - min) * random.nextDouble();
     }
 
     private boolean shouldApplyReach() {

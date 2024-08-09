@@ -13,7 +13,7 @@ import com.fun.inject.injection.wrapper.impl.util.MouseHelperWrapper;
 import com.fun.inject.injection.wrapper.impl.world.WorldClientWrapper;
 import com.fun.utils.version.fields.Fields;
 import com.fun.utils.version.methods.Methods;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.utils.ReflectionUtils;
 import com.fun.inject.injection.wrapper.Wrapper;
@@ -223,7 +223,7 @@ public class MinecraftWrapper extends Wrapper {
     //MD: le/a (Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture; net/minecraft/world/WorldServer/func_152344_a (Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture;
     public void addScheduledTask(Runnable runnable) {
         try {
-            ReflectionUtils.invokeMethod(minecraftObj,Mappings.getObfMethod("func_152344_a"),new Class[]{Agent.findClass("java/lang/Runnable")},runnable);
+            ReflectionUtils.invokeMethod(minecraftObj,Mappings.getObfMethod("func_152344_a"),new Class[]{Bootstrap.findClass("java/lang/Runnable")},runnable);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -234,7 +234,7 @@ public class MinecraftWrapper extends Wrapper {
     }
 
     public static MinecraftWrapper get() {
-        if(Agent.isAgent) {
+        if(Bootstrap.isAgent) {
             try {
                 return new MinecraftWrapper(Minecraft.getMinecraft());//new MinecraftWrapper(ReflectionUtils.invokeMethod(Agent.findClass(Mappings.getObfClass(CLASS)), Mappings.getObfMethod("func_71410_x")));
             } catch (Exception e) {

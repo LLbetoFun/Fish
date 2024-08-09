@@ -2,7 +2,7 @@ package com.fun.inject.injection.asm.api;
 
 
 import com.fun.utils.version.clazz.Classes;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 
 public class Transformer {
@@ -19,11 +19,11 @@ public class Transformer {
 
     public Transformer(String name) {
         this.name = name;
-
         obfName = Mappings.getObfClass(name);
         if (obfName != null) {
             try {
-                clazz = Agent.findClass(obfName);
+                clazz = Bootstrap.findClass(obfName);
+                clazz.getName();
                 //oldBytes = InjectUtils.getClassBytes(clazz);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -9,7 +9,7 @@ import org.lwjgl.input.Keyboard;
 public class CommandHandle {
     public static boolean onSendMessage(String st){
         String s= StringUtils.normalizeSpace(st.trim());
-        System.out.println(s);
+        //System.out.println(s);
         if(s.startsWith(".")){
             if(s.startsWith(".bind")){
                 String[] s1=s.split(" ");

@@ -48,9 +48,9 @@ public class Mappings {
 
     public static final Map<String, String> unFriendMethods = new HashMap<>();
     static {
-        if(Agent.isAgent){
+        if(Bootstrap.isAgent){
             try {
-                readMappings(Agent.minecraftVersion,Agent.minecraftType);
+                readMappings(Bootstrap.minecraftVersion, Bootstrap.minecraftType);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -114,7 +114,7 @@ public class Mappings {
     }
 
     public static void readMappings(MinecraftVersion mcVer, MinecraftType mcType) throws IOException {
-        JarFile jar=new JarFile(Agent.jarPath);
+        JarFile jar=new JarFile(Bootstrap.jarPath);
         if (mcType == MinecraftType.MCP) {
             if (mcVer == MinecraftVersion.VER_1710 || mcVer == MinecraftVersion.VER_189) {
                 InputStream f = IOUtils.getEntryFromJar(jar, InjectUtils.getCvsF(mcVer));
@@ -348,21 +348,7 @@ public class Mappings {
     public synchronized static String getObfClass(String friendlyName) {
         return obfClass.get(friendlyName)==null?friendlyName:obfClass.get(friendlyName);
     }
-    public static byte[] deobfClass(byte[] bs){
-        ClassNode cn= Transformers.node(bs);
-        for(MethodNode mn:cn.methods){
 
-            mn.name=Mappings.friendMethods.get(
-                    Mappings.unObfFullMethods.get(cn.name+"/"+mn.name))==null?mn.name:Mappings.friendMethods.get(Mappings.unObfFullMethods.get(cn.name+"/"+mn.name));
-
-        }
-        for(FieldNode mn:cn.fields){
-            mn.name=Mappings.friendFields.get(Mappings.unObfFullFields.get(cn.name+"/"+mn.name))==null?mn.name:Mappings.friendFields.get(Mappings.unObfFullFields.get(cn.name+"/"+mn.name));
-        }
-        ClassWriter cw=new FishClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
-        cn.accept(cw);
-        return cw.toByteArray();
-    }
 
     public static String getUnobfClass(String obfName) {
 

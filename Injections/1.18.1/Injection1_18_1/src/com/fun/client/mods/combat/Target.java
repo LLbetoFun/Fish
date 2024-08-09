@@ -57,7 +57,7 @@ public class Target extends VModule {
                     if (p == null) continue;
                     if (Classes.EntityPlayerSP.isInstanceof(p)) continue;
 
-                    if (p.getDisplayName().getString().startsWith(mc.player.getDisplayName().getString().substring(1, 3))) {
+                    if (p.getDisplayName().getContents().startsWith(mc.player.getDisplayName().getContents().substring(1, 3))) {
                         bots.add(p);
                         continue;
                     }

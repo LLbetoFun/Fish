@@ -10,6 +10,7 @@ import com.fun.client.mods.render.NotificationModule;
 import com.fun.client.mods.render.Rotations;
 import com.fun.client.mods.world.Eagle;
 import com.fun.client.mods.world.Scaffold;
+import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 
@@ -24,7 +25,7 @@ public class VModuleManager {
     public AimBot aimBot;
     public Eagle eagle;
     public StrafeFix strafeFix;
-    public Minecraft mc=Minecraft.getInstance();
+    public Minecraft mc= MinecraftWrapper.getInstance();
 
     public Rotations rotations;
     public FreeLook freeLook;

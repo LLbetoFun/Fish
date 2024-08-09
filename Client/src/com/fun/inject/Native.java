@@ -1,7 +1,6 @@
 package com.fun.inject;
 
-import java.lang.instrument.UnmodifiableClassException;
-import java.util.ArrayList;
+
 
 
 public class Native{
@@ -11,12 +10,12 @@ public class Native{
     }
     public Native(){
     }
-    public void addTransformer(Agent.ClassTransformer transformer,boolean b) {
+    public void addTransformer(IClassTransformer transformer,boolean b) {
         NativeUtils.transformers.add(transformer);
     }
 
 
-    public void addTransformer(Agent.ClassTransformer transformer) {
+    public void addTransformer(IClassTransformer transformer) {
         /*try {
             Class<?> nativeUtils=ClassLoader.getSystemClassLoader().loadClass("injection.com.fun.NativeUtils");
             Field ft= nativeUtils.getDeclaredField("transformers");
@@ -32,7 +31,7 @@ public class Native{
 
 
 
-    public void retransformClasses(Class<?>... classes) throws UnmodifiableClassException {
+    public void retransformClasses(Class<?>... classes){
         for(Class<?> kls:classes)
             NativeUtils.retransformClass0(kls);
     }
@@ -54,15 +53,10 @@ public class Native{
         NativeUtils.redefineClass(clazz,bytes);
     }
     public void doneTransform(){
-        ArrayList<NativeUtils.ClassDefiner> classDefiners = NativeUtils.classDefiners;
-        for (int i = 0, classDefinersSize = classDefiners.size(); i < classDefinersSize; i++) {
-            NativeUtils.ClassDefiner classDefiner = classDefiners.get(i);
-            this.redefineClass(classDefiner.clazz, classDefiner.bytes);
-        }
-        NativeUtils.classDefiners.clear();
+        NativeUtils.doneTransform();
     }
 
-    public void removeTransformer(Agent.ClassTransformer transformer) {
+    public void removeTransformer(Bootstrap.GameClassTransformer transformer) {
         NativeUtils.transformers.remove(transformer);
     }
 }

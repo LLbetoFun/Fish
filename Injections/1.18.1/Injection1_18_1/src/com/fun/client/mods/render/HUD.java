@@ -72,7 +72,7 @@ public class HUD extends Module {
 
         for(Module m:running){
             ScaledResolutionWrapper sr=new ScaledResolutionWrapper(mc);
-            double offset = yCount * (FontManager.tenacity.getFontHeight("F") + 2);//Minecraft.getInstance().font.width(
+            double offset = yCount * (FontManager.tenacity.getFontHeight("F") + 2);
 
             if (m.running) {
                 if (!modBlacklist.contains(m.getClass().getName())) {

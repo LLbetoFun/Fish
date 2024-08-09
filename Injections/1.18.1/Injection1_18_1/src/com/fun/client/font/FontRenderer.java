@@ -1,5 +1,6 @@
 package com.fun.client.font;
 
+import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.fun.inject.injection.wrapper.impl.render.GlStateManagerWrapper;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -37,7 +38,7 @@ import static com.fun.utils.RenderManager.roundToDecimal;
 
 
 public class FontRenderer implements Closeable {
-    public static Minecraft mc=Minecraft.getInstance();
+    public static Minecraft mc= MinecraftWrapper.getInstance();
     private static final Char2IntArrayMap colorCodes = new Char2IntArrayMap() {{
         put('0', 0x000000);
         put('1', 0x0000AA);

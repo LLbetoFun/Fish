@@ -1,6 +1,6 @@
 package com.fun.utils.version.clazz;
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.MinecraftVersion;
@@ -73,7 +73,7 @@ public enum Classes {
         this.obf_name =Mappings.getObfClass(name);
         this.friendly_name=name;
         try {
-            this.clazz = Agent.findClass(this.obf_name);
+            this.clazz = Bootstrap.findClass(this.obf_name);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -88,32 +88,32 @@ public enum Classes {
             map.get(vClass.minecraftType).put(vClass.minecraftVersion,vClass);
         }
         if(getVClass().clazz==null){
-            Agent.logger.info("cant find class:{}",getVClass().obf_name);
+            System.out.println("cant find class:"+getVClass().obf_name);
 
         }
     }
     public String getName(){
-        VClass V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1.obf_name;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2.obf_name;
         VClass V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.obf_name;
         return null;
     }
     public Class<?> getClazz(){
-        VClass V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1.clazz;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2.clazz;
         VClass V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.clazz;
         return null;
     }
     public VClass getVClass(){
-        VClass V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2;
         return map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
     }
@@ -126,7 +126,7 @@ public enum Classes {
                 return true;
             c = c.getSuperclass();
         }
-        //Agent.logger.info(instance.getClass().getName());
+        //System.out.println(instance.getClass().getName());
         return false;
     }
 }

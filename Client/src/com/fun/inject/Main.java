@@ -1,6 +1,7 @@
 package com.fun.inject;
 
 
+import com.fun.gui.OldFrame;
 import com.sun.tools.attach.VirtualMachine;
 import com.fun.gui.Injector;
 import com.fun.network.TCPServer;
@@ -21,12 +22,13 @@ public class Main {
     public static String pid;
     public static final int SERVERPORT=17573;
     public static Injector injector;
+    public static OldFrame fishFrame;
     static {
-        if(!Agent.isAgent)System.loadLibrary("libinjector");
+        if(!Bootstrap.isAgent)System.loadLibrary("libinjector");
     }
     public static void start()
     {
-            Agent.classLoader=Main.class.getClassLoader();
+            Bootstrap.classLoader=Main.class.getClassLoader();
             TCPServer.startServer(SERVERPORT);
             Method addURL = null;
 

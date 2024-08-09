@@ -20,7 +20,7 @@ public class PacketAddModule implements IPacket {
 
     @Override
     public void process() {
-        System.out.println(name+" "+key+" "+category);
+        //System.out.println(name+" "+key+" "+category);
         Module m=new Module();
         m.name=name;
         m.key=key;

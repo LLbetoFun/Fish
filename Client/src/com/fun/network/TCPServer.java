@@ -1,14 +1,9 @@
 package com.fun.network;
 
-import com.fun.client.FunGhostClient;
-import com.fun.client.config.ConfigModule;
 import com.fun.inject.*;
-import com.fun.inject.mapper.Mapper;
 import com.fun.utils.jna.WindowEnumerator;
-import com.fun.gui.FishFrame;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -23,7 +18,7 @@ public class TCPServer {
         return Thread.currentThread() instanceof ServerThread;
     }
     public static int getTargetPort(){
-        return Agent.isAgent? Main.SERVERPORT:Agent.SERVERPORT;
+        return Bootstrap.isAgent? Main.SERVERPORT: Bootstrap.SERVERPORT;
     }
 
     public static class ServerThread extends Thread{
@@ -31,14 +26,14 @@ public class TCPServer {
         public ServerThread(int portIn) {
             super();
             this.portIn=portIn;
-            System.out.println("isAgent: "+Agent.isAgent);
+            //System.out.println("isAgent: "+Agent.isAgent);
         }
 
         @Override
         public void run() {
             super.run();
             try (ServerSocket serverSocket = new ServerSocket(portIn)) {
-                System.out.println("服务器启动，监听端口：" + portIn);
+                //System.out.println("服务器启动，监听端口：" + portIn);
 
                 while (true) {
                     // 等待客户端连接
@@ -49,7 +44,7 @@ public class TCPServer {
 
                     try {
                         Object receivedObject = ois.readObject();
-                        System.out.println("Received object: " + receivedObject);
+                        //System.out.println("Received object: " + receivedObject);
 
                         if (receivedObject instanceof IPacket) {
                             receive((IPacket) receivedObject);

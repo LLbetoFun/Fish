@@ -13,6 +13,7 @@
         <element id="file-copy" path="$PROJECT_DIR$/fish/launcher.exe" />
         <element id="file-copy" path="$PROJECT_DIR$/fish/libagent.dll" />
         <element id="file-copy" path="$PROJECT_DIR$/fish/libinjector.dll" />
+        <element id="artifact" artifact-name="hooks" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/fish/fishgc使用方法.txt" />
     </root>

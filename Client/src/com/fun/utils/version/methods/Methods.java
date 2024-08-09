@@ -1,6 +1,6 @@
 package com.fun.utils.version.methods;
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.MinecraftVersion;
 import com.fun.inject.utils.ReflectionUtils;
@@ -146,18 +146,18 @@ public enum Methods {
     }
 
     public String getName(){
-        VMethod V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VMethod V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1.obf_name;
-        VMethod V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VMethod V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2.obf_name;
         VMethod V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.obf_name;
         return null;
     }
     public VMethod getVMethod(){
-        VMethod V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VMethod V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1;
-        VMethod V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VMethod V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2;
         VMethod V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3;

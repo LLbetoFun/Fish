@@ -242,6 +242,23 @@ public class MathHelper
 
         return value;
     }
+    public static float wrapAngleTo180_double(float value)
+    {
+        value = value % 360.0F;
+
+        if (value >= 180.0F)
+        {
+            value -= 360.0F;
+        }
+
+        if (value < -180.0F)
+        {
+            value += 360.0F;
+        }
+
+        return value;
+    }
+
 
 
     /**

@@ -4,7 +4,7 @@ import com.fun.eventapi.event.events.*;
 import com.fun.client.FunGhostClient;
 import com.fun.client.config.ConfigModule;
 import com.fun.client.settings.Setting;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.fun.network.TCPClient;
 import com.fun.network.TCPServer;
@@ -31,7 +31,7 @@ public class Module{
         //EventManager.register(this);
         category=categoryIn;
         configModule=new ConfigModule(this);
-        if(Agent.isAgent){
+        if(Bootstrap.isAgent){
             mc=MinecraftWrapper.get();
             TCPClient.send(TCPServer.getTargetPort(),new PacketAddModule(this));
         }
@@ -49,7 +49,7 @@ public class Module{
         if(running!=this.running) {
             this.running = running;
             FunGhostClient.onValueChange();
-            if(Agent.isAgent){
+            if(Bootstrap.isAgent){
                 if (running) onEnable();
                 else onDisable();
             }

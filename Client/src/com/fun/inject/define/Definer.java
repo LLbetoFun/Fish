@@ -1,13 +1,12 @@
 package com.fun.inject.define;
 
-import com.fun.inject.Agent;
+import com.fun.hook.Printer;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.NativeUtils;
 import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.inject.utils.ReflectionUtils;
-import org.newdawn.slick.Game;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-import sun.jvmstat.perfdata.monitor.PerfStringMonitor;
 
 import java.util.ArrayList;
 
@@ -16,8 +15,7 @@ public class Definer {
     public static void defineClass(String className){
         if(className==null) return;
         className=className.replace('/', '.');
-        System.out.println(className);
-        byte[] bytes = Agent.classes.get(className);
+        byte[] bytes = Bootstrap.classes.get(className);
         ClassNode cn;
         try {
             cn = Transformers.node(bytes);
@@ -29,7 +27,7 @@ public class Definer {
         }
         if(cn==null)return;
         if (!definedClasses.contains(cn.name)) {
-            if (Agent.isSelfClass(cn.name)) {
+            if (Bootstrap.isSelfClass(cn.name)) {
                 definedClasses.add(cn.name);
                 defineClass(cn.superName);
                 for(String s:cn.interfaces){
@@ -43,8 +41,8 @@ public class Definer {
                     }
                 }
                 try {
-                    if(ReflectionUtils.invokeMethod(Agent.classLoader,"findLoadedClass",new Class[]{String.class},className)!=null)return;
-                    NativeUtils.defineClass(Agent.classLoader, bytes);
+                    if(ReflectionUtils.invokeMethod(Bootstrap.classLoader,"findLoadedClass",new Class[]{String.class},className)!=null)return;
+                    NativeUtils.defineClass(Bootstrap.classLoader, bytes);
                 }
                 catch (Exception e){
                     e.printStackTrace();

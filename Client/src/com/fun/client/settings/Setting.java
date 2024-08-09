@@ -3,7 +3,8 @@ package com.fun.client.settings;
 
 import com.fun.client.FunGhostClient;
 import com.fun.client.mods.Module;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
+import com.fun.inject.Main;
 import com.fun.network.TCPClient;
 import com.fun.network.TCPServer;
 import com.fun.network.packets.*;
@@ -56,7 +57,7 @@ public class Setting implements Serializable {
 
 	}
 	public void send(){
-		if(Agent.isAgent)TCPClient.send(TCPServer.getTargetPort(),new PacketAddSetting(this.parent,this));
+		if(Bootstrap.isAgent)TCPClient.send(TCPServer.getTargetPort(),new PacketAddSetting(this.parent,this));
 	}
 
 	public Setting() {
@@ -88,7 +89,7 @@ public class Setting implements Serializable {
 
 
 	public void updateActiveState(){
-		if(!Agent.isAgent) {
+		if(!Bootstrap.isAgent) {
 			for (int i = 0, jComponentsSize = jComponents.size(); i < jComponentsSize; i++) {
 
 				JComponent jc = jComponents.get(i);
@@ -97,7 +98,7 @@ public class Setting implements Serializable {
 				//System.out.println(jc.getName() + " " + jc.isVisible());
 				if (!b) {
 					SwingUtilities.invokeLater(() ->
-							SwingUtilities.updateComponentTreeUI(Agent.fishFrame));
+							SwingUtilities.updateComponentTreeUI(Main.fishFrame));
 				}
 			}
 		}

@@ -6,14 +6,10 @@ import com.fun.eventapi.EventTarget;
 import com.fun.eventapi.event.events.*;
 import com.fun.client.FunGhostClient;
 import com.fun.client.config.ConfigModule;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.MinecraftVersion;
-import com.fun.inject.injection.wrapper.impl.setting.GameSettingsWrapper;
-import com.fun.utils.version.methods.Methods;
 
 import java.util.ArrayList;
-
-import static com.fun.client.utils.Rotation.Rotation.mc;
 
 public class RegisterManager {
     public ArrayList<Module> mods = new ArrayList<>();
@@ -100,8 +96,8 @@ public class RegisterManager {
             }
             if (m.running) m.onKey(event);
         }
-        if (event.key == 1&& Agent.minecraftVersion!= MinecraftVersion.VER_1181) ConfigModule.saveConfig();
-        if (event.key==256&&Agent.minecraftVersion== MinecraftVersion.VER_1181)ConfigModule.saveConfig();
+        if (event.key == 1&& Bootstrap.minecraftVersion!= MinecraftVersion.VER_1181) ConfigModule.saveConfig();
+        if (event.key==256&& Bootstrap.minecraftVersion== MinecraftVersion.VER_1181)ConfigModule.saveConfig();
     }
 
     @EventTarget

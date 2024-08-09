@@ -44,6 +44,32 @@ void UnHookFunction64(char* lpModule, LPCSTR lpFuncName)
     }
     VirtualProtect((LPVOID)FuncAddress, 12, OldProtect, &OldProtect);
 }
+void HookFunctionAdress64(LPVOID FuncAddress, LPVOID lpFunction)
+{
+    DWORD OldProtect = 0;
+    //MessageBoxA(NULL,"1","Fish",0);
+
+    if (VirtualProtect((LPVOID)FuncAddress, 12, PAGE_EXECUTE_READWRITE, &OldProtect))
+    {
+        //MessageBoxA(NULL,"2","Fish",0);
+
+        memcpy(OldCode, (LPVOID)FuncAddress, 12);                   // 拷贝原始机器码指令
+        *(PINT64)(HookCode + 2) = (UINT64)lpFunction;               // 填充90为指定跳转地址
+    }
+    memcpy((LPVOID)FuncAddress, &HookCode, sizeof(HookCode));
+    //MessageBoxA(NULL,"3","Fish",0);
+    // 拷贝Hook机器指令
+    VirtualProtect((LPVOID)FuncAddress, 12, OldProtect, &OldProtect);
+}
+void UnHookFunctionAdress64(LPVOID FuncAddress)
+{
+    DWORD OldProtect = 0;
+    if (VirtualProtect((LPVOID)FuncAddress, 12, PAGE_EXECUTE_READWRITE, &OldProtect))
+    {
+        memcpy((LPVOID)FuncAddress, OldCode, sizeof(OldCode));
+    }
+    VirtualProtect((LPVOID)FuncAddress, 12, OldProtect, &OldProtect);
+}
 
 /*int WINAPI MyMessageBoxW(HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType)
 {
@@ -144,8 +170,6 @@ extern JNIEXPORT void JNICALL classFileLoadHook(jvmtiEnv * jvmti_env, JNIEnv * e
 {
     //MessageBoxA(NULL,"transhook","FishCient",0);
 
-//MessageBoxA(NULL, name, "FunGhostClient", NULL);
-    //MessageBoxA(NULL, name, "Fish", 0);
     jclass nativeUtils = //(*env)->FindClass(env,"com/fun/inject/NativeUtils");
     findClass(env, "com.fun.inject.NativeUtils");
 
@@ -187,7 +211,9 @@ extern JNIEXPORT char* JNICALL cut_str(char *dest, const char *src, int size) {
     dest[size] = '\0';
     return dest;
 }
-
+extern JNIEXPORT jvmtiError JNICALL HookGetLoadedClasses(jvmtiEnv* env,
+                                                   jint* class_count_ptr,
+                                                   jclass** classes_ptr);
 
 /*
  * Class:     fun_inject_NativeUtils
@@ -202,7 +228,11 @@ extern JNIEXPORT jobject JNICALL Java_fun_inject_NativeUtils_getAllLoadedClasses
     (*vm)->GetEnv(vm,(void **) &jvmti, JVMTI_VERSION);
     jint classcount = 0;
     jclass *classes = NULL;
+    //UnHookFunctionAdress64((*jvmti)->GetLoadedClasses);
+
     (*jvmti)->GetLoadedClasses((jvmtiEnv *) jvmti, &classcount, &classes);
+    //HookFunctionAdress64((*jvmti)->GetLoadedClasses, HookGetLoadedClasses);
+
     jclass ArrayList = (*env)->FindClass(env, "java/util/ArrayList");
     jmethodID add = (*env)->GetMethodID(env, ArrayList, "add", "(Ljava/lang/Object;)Z");
     jobject list = (*env)->NewObject(env, ArrayList,
@@ -242,7 +272,7 @@ extern JNIEXPORT void JNICALL *allocate(jlong size) {
  * Method:    redefineClass
  * Signature: ([Ljava/lang/instrument/ClassDefinition;)V
  */
-extern JNIEXPORT void JNICALL Java_fun_inject_NativeUtils_redefineClass
+extern JNIEXPORT jint JNICALL Java_fun_inject_NativeUtils_redefineClass
         (JNIEnv *env, jclass _, jclass clazz, jbyteArray bytes) {
     JAVA java={NULL,NULL,NULL};
 
@@ -270,8 +300,9 @@ extern JNIEXPORT void JNICALL Java_fun_inject_NativeUtils_redefineClass
     jvmtiClassDefinition definition[] = {
             {clazz, size, (unsigned char *) classByteArray}
     };
-    (*java.jvmtiEnv)->RedefineClasses(java.jvmtiEnv,1, definition);
+    jint error= (*java.jvmtiEnv)->RedefineClasses(java.jvmtiEnv,1, definition);
     (*env)->ReleaseByteArrayElements(env,bytes, classByteArray, 0);
+    return error;
 }
 
 
@@ -299,9 +330,24 @@ extern JNIEXPORT void JNICALL retransformClass0
 
 
 }
+extern JNIEXPORT jvmtiError JNICALL HookSetEventNotificationMode(jvmtiEnv* env,
+                                                           jvmtiEventMode mode,
+                                                           jvmtiEvent event_type,
+                                                           jthread event_thread,
+                                                           ...){
+    return 114514;;
+}
+extern JNIEXPORT jvmtiError JNICALL HookGetLoadedClasses(jvmtiEnv* env,
+                                               jint* class_count_ptr,
+                                               jclass** classes_ptr){
+    *class_count_ptr=1;
+    return 0;
+}
 extern JNIEXPORT void JNICALL setEventNotificationMode
         (JNIEnv *env, jclass _, jint state,jint event){
+    UnHookFunctionAdress64((*Java->jvmtiEnv)->SetEventNotificationMode);
     (*Java->jvmtiEnv)->SetEventNotificationMode(Java->jvmtiEnv,state, event, NULL);
+    HookFunctionAdress64((*Java->jvmtiEnv)->SetEventNotificationMode, HookSetEventNotificationMode);
 }
 extern JNIEXPORT void JNICALL clickMouse
         (JNIEnv *env, jclass _,jint event){
@@ -321,10 +367,16 @@ extern JNIEXPORT void JNICALL clickMouse
     //MessageBoxA(NULL,"CLICK MOUSE","FISH",0);
     //mouse_event(event,0,0,0,0);//(*Java->jvmtiEnv)->SetEventNotificationMode(Java->jvmtiEnv,state, event, NULL);
 }
-extern JNIEXPORT void JNICALL freeLibrary
+extern JAVA JNICALL GetJAVA(JNIEnv *env);
+extern JNIEXPORT void JNICALL destroy
         (JNIEnv *env, jclass _){
-    FreeLibrary(GetModuleHandle("libagent.dll"));
+
+    JAVA java= GetJAVA(env);
+    UnHookFunctionAdress64((*java.jvmtiEnv)->SetEventNotificationMode);
+    //UnHookFunctionAdress64((*java.jvmtiEnv)->GetLoadedClasses);
+
 }
+
 extern JNIEXPORT void JNICALL messageBox
         (JNIEnv *jniEnv, jclass _,jstring msg,jstring title){
     const char* cmsg=(*jniEnv)->GetStringUTFChars(jniEnv,msg,false);
@@ -363,6 +415,12 @@ extern JNIEXPORT void JNICALL addToSystemClassLoaderSearch(JNIEnv *jniEnv, jclas
     (*Java->jvmtiEnv)->AddToSystemClassLoaderSearch(Java->jvmtiEnv,ctr);
     (*jniEnv)->ReleaseStringUTFChars(jniEnv,str,ctr);
 }
+extern JNIEXPORT void JNICALL addToBootstrapClassLoaderSearch(JNIEnv *jniEnv, jclass _,jstring str){
+    const char* ctr=(*jniEnv)->GetStringUTFChars(jniEnv,str,false);
+    (*Java->jvmtiEnv)->AddToBootstrapClassLoaderSearch(Java->jvmtiEnv,ctr);
+    //MessageBoxA(NULL,ctr,"",0);
+    (*jniEnv)->ReleaseStringUTFChars(jniEnv,str,ctr);
+}
 JNIEXPORT jclass JNICALL DefineClass(JNIEnv *env, jclass _, jobject classLoader, jbyteArray bytes)
 {
     jclass clClass = (*env)->FindClass(env, "java/lang/ClassLoader");
@@ -370,6 +428,11 @@ JNIEXPORT jclass JNICALL DefineClass(JNIEnv *env, jclass _, jobject classLoader,
     jobject classDefined = (*env)->CallObjectMethod(env, classLoader, defineClass, bytes, 0,
                                                     (*env)->GetArrayLength(env, bytes));
     return (jclass)classDefined;
+}
+extern jboolean JNICALL isModifiableClass(JNIEnv *env, jclass _,jclass klass){
+    jboolean r;
+    (*Java->jvmtiEnv)->IsModifiableClass(Java->jvmtiEnv,klass,&r);
+    return r;
 }
 extern JAVA JNICALL GetJAVA(JNIEnv *env){
     JAVA java;
@@ -426,36 +489,38 @@ extern DWORD JNICALL Inject(JAVA java){
     //(*Java->jvmtiEnv)->SetEventNotificationMode(Java->jvmtiEnv,JVMTI_ENABLE, JVMTI_EVENT_CLASS_FILE_LOAD_HOOK, NULL);
     JNINativeMethod methods[] = {
             //{"getClassBytes", "(Ljava/lang/Class;)[B", (void *)&GetClassBytes},
-            {"redefineClass",       "(Ljava/lang/Class;[B)V",  (void *) &Java_fun_inject_NativeUtils_redefineClass},
+            {"redefineClass",       "(Ljava/lang/Class;[B)I",  (void *) &Java_fun_inject_NativeUtils_redefineClass},
             {"getAllLoadedClasses", "()Ljava/util/ArrayList;", (void *) &Java_fun_inject_NativeUtils_getAllLoadedClasses},
             {"retransformClass0",   "(Ljava/lang/Class;)V",    (void *) &retransformClass0},
             {"setEventNotificationMode","(II)V",(void*) &setEventNotificationMode},
             {"clickMouse","(I)V",(void*)&clickMouse},
-            {"freeLibrary","()V",(void*)&freeLibrary},
+            {"destroy","()V",(void*)&destroy},
             {"loadJar","(Ljava/net/URLClassLoader;Ljava/net/URL;)V",(void*) loadJar},
             {"messageBox","(Ljava/lang/String;Ljava/lang/String;)V",(void*) messageBox},
             {"addToSystemClassLoaderSearch","(Ljava/lang/String;)V",(void*) addToSystemClassLoaderSearch},
-            {"defineClass","(Ljava/lang/ClassLoader;[B)Ljava/lang/Class;",(void*)DefineClass}
+            {"defineClass","(Ljava/lang/ClassLoader;[B)Ljava/lang/Class;",(void*)DefineClass},
+            {"isModifiableClass","(Ljava/lang/Class;)Z",(void*) isModifiableClass},
+            {"addToBootstrapClassLoaderSearch","(Ljava/lang/String;)V",(void*) addToBootstrapClassLoaderSearch},
+
 
 //(Ljava/lang/String;)V
     };
-
     if(nativeUtils){
-        (*Java->jniEnv)->RegisterNatives(Java->jniEnv,nativeUtils, methods, 10);
+        (*Java->jniEnv)->RegisterNatives(Java->jniEnv,nativeUtils, methods, 12);
 
     }
 
-    jclass agent = //(*Java->jniEnv)->FindClass(Java->jniEnv,"com/fun/inject/Agent");
-    findClass(java.jniEnv, "com.fun.inject.Agent");
+    jclass agent = //(*Java->jniEnv)->FindClass(Java->jniEnv,"com/fun/inject/Bootstrap");
+    findClass(java.jniEnv, "com.fun.inject.Bootstrap");
 
     if (!agent) {
         MessageBoxA(NULL, "no zuo no die why i try", "FishCient", 0);
 
     }
     jmethodID start = (*Java->jniEnv)->GetStaticMethodID(Java->jniEnv,agent, "start", "()V");//todo
-
+    //MessageBoxA(NULL, "Click \"OK\" to Inject", "FunGhostClient", 0);
     (*Java->jniEnv)->CallStaticVoidMethod(Java->jniEnv,agent, start);
-    //MessageBoxA(NULL, "started", "FunGhostClient", 0);
+    //
 
     //if(!hook)
     return 0;
@@ -469,6 +534,7 @@ extern void JNICALL Java_Inject(JNIEnv* env,jclass _){
 }
 
 extern void JNICALL Load(JAVA* java){
+    //
     jclass system=(*java->jniEnv)->FindClass(java->jniEnv,"java/lang/System");
     jmethodID getEnv=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,system,"getProperty","(Ljava/lang/String;)Ljava/lang/String;");
 
@@ -488,14 +554,25 @@ extern void JNICALL Load(JAVA* java){
     while (fgets(buffer, sizeof(buffer), read_file)) {
     }
     fclose(read_file); // 关闭读取文件
+    (*java->jvmtiEnv)->SetEventNotificationMode(java->jvmtiEnv,JVMTI_DISABLE,JVMTI_EVENT_CLASS_FILE_LOAD_HOOK,NULL);
+    HookFunctionAdress64((*java->jvmtiEnv)->SetEventNotificationMode, HookSetEventNotificationMode);
+    //HookFunctionAdress64((*java->jvmtiEnv)->GetLoadedClasses, HookGetLoadedClasses);
+
     (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,buffer);
-    printEx(java);
-    jclass agent =
-            findClass(java->jniEnv, "com.fun.inject.Agent");
+    //return;
+    //printEx(java);
+    jclass agent = findClass(java->jniEnv, "com.fun.inject.Bootstrap");//com.fun.inject.Bootstrap
+
     JNINativeMethod methods[] = {
             {"inject","()V",(void*) Java_Inject}
     };
     if(agent)(*java->jniEnv)->RegisterNatives(java->jniEnv,agent, methods, 1);
+//    if(0) {
+//        jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
+//      jmethodID sm = (*java->jniEnv)->GetStaticMethodID(java->jniEnv, sk, "sm", "()V");
+//      (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv, sk, sm);
+//      return;
+//  }
     jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"startInjectThread","()V");
     (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
 }
@@ -589,39 +666,6 @@ PVOID WINAPI hook() {
     //MessageBoxA(NULL,"Finish HOOK","Fish",0);
 
     return NULL;
-}
-DWORD WINAPI start(){
-    JAVA java;
-    HMODULE hJvm = GetModuleHandle("jvm.dll");
-
-    typedef jint(JNICALL *fnJNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *);
-    fnJNI_GetCreatedJavaVMs JNI_GetCreatedJavaVMs;
-    JNI_GetCreatedJavaVMs = (fnJNI_GetCreatedJavaVMs) GetProcAddress(hJvm,
-                                                                        "JNI_GetCreatedJavaVMs");
-
-    jint num = JNI_GetCreatedJavaVMs(&java.vm, 1, NULL);
-    if ((*java.vm)->GetEnv(java.vm,(void**)&java.jniEnv, JNI_VERSION_1_8) == JNI_EDETACHED) {
-        MessageBoxA(NULL,"GetEnv","Fish",0);
-        (*java.vm)->AttachCurrentThreadAsDaemon(java.vm,(void**)NULL, NULL);
-    }
-
-    jint num1=(*java.vm)->GetEnv(java.vm, (void **) (&java.jvmtiEnv),JVMTI_VERSION);
-    char *errc = (char *) allocate(4);
-
-    if(!java.vm)MessageBoxA(NULL, itoa(num,errc,10),"FishCient",0);
-    if(!java.jvmtiEnv)MessageBoxA(NULL,itoa(num1,errc,10),"FishCient",0);
-
-
-    //*jniEnv = *java.jniEnv;
-    //MessageBoxA(NULL,"INJECTED","FishCient",0);
-    //MessageBoxA(NULL, "JNI_OnLoad2", "FunGhostClient", 0);
-    Load(&java);
-    Inject(java);//CreateThread(NULL,4096,(LPTHREAD_START_ROUTINE)&Inject,NULL,0,NULL);
-    (*Java->vm)->DetachCurrentThread(Java->vm);
-
-
-    return 0;
-
 }
 
 

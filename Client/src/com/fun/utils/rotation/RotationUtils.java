@@ -86,26 +86,18 @@ public class RotationUtils {
     //}
     public static Rotation limitAngleChange(final Rotation currentRotation, final Rotation targetRotation,final float turnSpeed) {
         float yawDifference = getAngleDifference(targetRotation.
-                getYaw(), currentRotation.getYaw());
-        float pitchDifference = getAngleDifference(targetRotation.getPitch(), currentRotation.getPitch());
+                getYaw(),currentRotation.getYaw());
+        float pitchDifference = getAngleDifference((float) targetRotation.getPitch(), (float) currentRotation.getPitch());
 
         return new Rotation(
-                currentRotation.getYaw() +((yawDifference > turnSpeed ? turnSpeed : Math.max(yawDifference, -turnSpeed))),
-                currentRotation.getPitch() + (pitchDifference > turnSpeed ? turnSpeed : Math.max(pitchDifference, -turnSpeed))
+                (float) (currentRotation.getYaw() +((yawDifference > turnSpeed ? turnSpeed : Math.max(yawDifference, -turnSpeed)))),
+                (float) (currentRotation.getPitch() + (pitchDifference > turnSpeed ? turnSpeed : Math.max(pitchDifference, -turnSpeed)))
         );
     }
-    public static float getAngleDifference(final float a, final float b) {
+    public static float getAngleDifference(final double a, final double b) {
         return Float.parseFloat(Double.valueOf(MathHelper.wrapAngleTo180_double((a) - b)).toString());
     }
-    public static Rotation limitAngleChange5(final Rotation currentRotation, final Rotation targetRotation,final float turnSpeed,float igron) {
-        //float yawDifference = getAngleDifference(targetRotation.getYaw(), currentRotation.getYaw());
-        //float pitchDifference = getAngleDifference(targetRotation.getPitch(), currentRotation.getPitch());
 
-        return new Rotation(
-                updateRotation(currentRotation.getYaw(), targetRotation.getYaw(),turnSpeed,igron),
-                updateRotation(currentRotation.getPitch(), targetRotation.getPitch(),turnSpeed,igron)
-        );
-    }
     public static float updateRotation(float current, float calc, float maxDelta,float minDelta) {
         float f = MathHelper.wrapAngleTo180_float(calc - current);
         if (f > maxDelta) {

@@ -2,7 +2,7 @@ package com.fun.client.font;
 
 
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.utils.file.IOUtils;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class FontManager {
     public static FontRenderer tenacity20;
     public static FontRenderer simkai;
     public static void init(){
-        try(JarFile jar=new JarFile(Agent.jarPath);) {
+        try(JarFile jar=new JarFile(Bootstrap.jarPath);) {
             Font inkfree=getFont(35, IOUtils.getEntryFromJar(jar,"assets/fonts/Inkfree.ttf"));
             Font tenacityF=getFont(25,IOUtils.getEntryFromJar(jar,"assets/fonts/tenacity.ttf"));
             inkFree=createFontRenderer(inkfree, 35);

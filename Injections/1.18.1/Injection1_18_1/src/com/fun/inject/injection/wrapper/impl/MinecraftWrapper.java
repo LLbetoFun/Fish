@@ -12,8 +12,7 @@ import com.fun.inject.injection.wrapper.impl.setting.GameSettingsWrapper;
 import com.fun.inject.injection.wrapper.impl.util.MouseHelperWrapper;
 import com.fun.inject.injection.wrapper.impl.world.WorldClientWrapper;
 import com.fun.utils.version.fields.Fields;
-import com.fun.utils.version.methods.Methods;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.utils.ReflectionUtils;
 import com.fun.inject.injection.wrapper.Wrapper;
@@ -201,12 +200,16 @@ public class MinecraftWrapper extends Wrapper {
     }
 
     public static MinecraftWrapper get() {
-        if(Agent.isAgent) {
-            try {
-                return new MinecraftWrapper(Minecraft.getInstance());//new MinecraftWrapper(ReflectionUtils.invokeMethod(Agent.findClass(Mappings.getObfClass(CLASS)), Mappings.getObfMethod("func_71410_x")));
-            } catch (Exception e) {
-            }
+        if(Bootstrap.isAgent) {
+            return new MinecraftWrapper(getInstance());
         }
         return null;
+    }
+    public static Minecraft getInstance() {
+        try {
+            return (Minecraft) ReflectionUtils.getFieldValue(Bootstrap.findClass(Mappings.getObfClass("net/minecraft/client/Minecraft")),Mappings.getObfField("f_90981_"));
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

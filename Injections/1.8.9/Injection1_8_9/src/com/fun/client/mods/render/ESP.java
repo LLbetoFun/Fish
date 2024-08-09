@@ -3,7 +3,7 @@ package com.fun.client.mods.render;
 import com.fun.client.mods.Category;
 import com.fun.client.mods.VModule;
 import com.fun.eventapi.event.events.EventRender2D;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.fun.inject.mapper.SideOnly;
 import com.fun.utils.math.MathUtils;
@@ -55,7 +55,7 @@ public class ESP extends VModule{
     }
     public ESP() {
         super("ESP", Category.Render);
-        if(Agent.isAgent) setup();
+        if(Bootstrap.isAgent) setup();
     }
     @SideOnly(SideOnly.Type.AGENT)
 

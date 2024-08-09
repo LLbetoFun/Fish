@@ -5,8 +5,7 @@ import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventRender2D;
 import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Transformer;
-import com.fun.inject.injection.asm.api.Transformers;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftType;
 import org.objectweb.asm.Opcodes;
@@ -18,7 +17,7 @@ public class GuiIngameTransformer extends Transformer {
 
 
     public GuiIngameTransformer() {
-        super(!(Agent.minecraftType == MinecraftType.FORGE) ?"net/minecraft/client/gui/GuiIngame":"net/minecraftforge/client/GuiIngameForge");
+        super(!(Bootstrap.minecraftType == MinecraftType.FORGE) ?"net/minecraft/client/gui/GuiIngame":"net/minecraftforge/client/GuiIngameForge");
     }
 
 
@@ -47,7 +46,7 @@ public class GuiIngameTransformer extends Transformer {
         }
 
         if (point == null) {
-            Transformers.logger.error("Failed to find last GlStateManager#color call in GuiInGame");
+            System.out.println("Failed to find last GlStateManager#color call in GuiInGame");
             return;
         }
 

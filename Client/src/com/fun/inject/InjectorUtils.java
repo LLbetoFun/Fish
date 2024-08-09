@@ -8,13 +8,10 @@ import com.sun.jna.platform.win32.*;
 public class InjectorUtils {
     public static final Kernel32 kernel32 = Kernel32.INSTANCE;
     public static final User32 user32 = User32.INSTANCE;
-    public static void injector(int pid,String dllPath){
+    public static void injectDll(int pid,String dllPath){
         WinNT.HANDLE hdl = kernel32.OpenProcess(0x1F1FFB, false, pid);
         loadLibrary(hdl,dllPath);
 
-    }
-    public static void free(){
-        kernel32.FreeLibrary(kernel32.GetModuleHandle("libagent.dll"));
     }
     public static native void injectorR(int pid,String dll);
     public static native void addToSystemClassLoaderSearch(String path);

@@ -1,6 +1,7 @@
 package com.fun.inject.injection.wrapper.impl.entity;
 
 
+import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.fun.inject.injection.wrapper.impl.other.IChatComponentWrapper;
 import com.fun.inject.injection.wrapper.impl.other.MovementInputWrapper;
 import com.fun.inject.injection.wrapper.impl.world.BlockPosWrapper;
@@ -39,7 +40,7 @@ public class EntityPlayerSPWrapper extends EntityPlayerWrapper {
 
 
     public boolean isOpenGui(){
-        return Minecraft.getInstance().screen!=null;
+        return MinecraftWrapper.getInstance().screen!=null;
     }
     //movementInput FD: bew/b net/minecraft/client/entity/EntityPlayerSP/field_71158_b
 

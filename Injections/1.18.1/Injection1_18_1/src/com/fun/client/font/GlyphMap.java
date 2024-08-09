@@ -1,6 +1,7 @@
 package com.fun.client.font;
 
 import com.fun.inject.Mappings;
+import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
 import com.fun.inject.utils.ReflectionUtils;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -53,7 +54,7 @@ class GlyphMap {
     }
 
     public void destroy() {
-        Minecraft.getInstance().getTextureManager().release(this.bindToTexture);
+        MinecraftWrapper.getInstance().getTextureManager().release(this.bindToTexture);
         this.glyphs.clear();
         this.width = -1;
         this.height = -1;
@@ -170,9 +171,9 @@ class GlyphMap {
             DynamicTexture tex = new DynamicTexture(image);
             tex.upload();
             if (RenderSystem.isOnRenderThread()) {
-                Minecraft.getInstance().getTextureManager().register(i, tex);
+                MinecraftWrapper.getInstance().getTextureManager().register(i, tex);
             } else {
-                RenderSystem.recordRenderCall(() -> Minecraft.getInstance().getTextureManager().register(i, tex));
+                RenderSystem.recordRenderCall(() -> MinecraftWrapper.getInstance().getTextureManager().register(i, tex));
             }
         } catch (Throwable e) {
             e.printStackTrace();

@@ -60,7 +60,7 @@ public class AimAssist extends Module {
                 (mc.getMouseHelper().getDeltaY() == 0 && mc.getMouseHelper().getDeltaX() == 0 && onRotate.getValBoolean()))
             return;
 
-        Vector2f rotations = new Vector2f(MathHelper.wrapAngleTo180_float(this.lastRotations.getYaw() +
+        Vector2f rotations = new Vector2f((float) MathHelper.wrapAngleTo180_double(this.lastRotations.getYaw() +
                 (this.rotations.getYaw() - this.lastRotations.getYaw()) * mc.getTimer().getRenderPartialTicks()), 0);
         final float strength = (float) speed.getValDouble();
         final float f = mc.getGameSettings().geMouseSensitivity() * 0.6F + 0.2F;
@@ -76,7 +76,7 @@ public class AimAssist extends Module {
         playersp.setAngles(f2, f3 * i);
     }
 
-    public static float getAngleDifference(final float a, final float b) {
+    public static float getAngleDifference(final double a, final double b) {
         return Float.parseFloat(Double.valueOf(MathHelper.wrapAngleTo180_double((a) - b)).toString());
     }
 

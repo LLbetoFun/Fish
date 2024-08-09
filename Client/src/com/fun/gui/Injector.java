@@ -1,8 +1,7 @@
 package com.fun.gui;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Main;
 
 import javax.swing.*;
@@ -26,7 +25,7 @@ public class Injector extends JFrame {
 
     }
     private void init(){
-        setTitle("Fish"+ Agent.VERSION);
+        setTitle("Fish"+ Bootstrap.VERSION);
         setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico.png")).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(new GridLayout());

@@ -7,19 +7,14 @@ import com.fun.inject.injection.asm.api.Inject;
 
 import com.fun.inject.injection.asm.api.Transformer;
 
-import com.fun.inject.Agent;
 import com.fun.inject.Mappings;
-import com.fun.inject.MinecraftVersion;
 import com.fun.inject.mapper.Mapper;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
-
-import java.util.ArrayList;
 
 public class EntityTransformer extends Transformer {
     public EntityTransformer() {

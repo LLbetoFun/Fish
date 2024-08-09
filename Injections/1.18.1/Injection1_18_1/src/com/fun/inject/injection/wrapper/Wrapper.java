@@ -2,7 +2,7 @@ package com.fun.inject.injection.wrapper;
 
 
 import com.fun.utils.version.clazz.Classes;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 
 
@@ -23,7 +23,7 @@ public class Wrapper {
 
         if (obfName != null) {
             try {
-                clazz = Agent.findClass(obfName);
+                clazz = Bootstrap.findClass(obfName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

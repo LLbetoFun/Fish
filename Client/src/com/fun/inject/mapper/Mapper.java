@@ -1,11 +1,10 @@
 package com.fun.inject.mapper;
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.utils.FishClassWriter;
 import com.fun.utils.file.IOUtils;
-import com.fun.utils.version.clazz.Classes;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Handle;
@@ -45,7 +44,6 @@ public class Mapper {
     public static File mapJar(File jarIn,MinecraftType mcType){
         //if(mcType==MinecraftType.NONE)return jarIn;
         File tj=new File(new File(jarIn.getParent()).getParent(),"/injection_"+mcType.getType()+".jar");
-        System.out.println(tj.getAbsolutePath());
         try(JarFile jar = new JarFile(jarIn)){
             if(tj.exists()){
                 tj.delete();
@@ -105,8 +103,8 @@ public class Mapper {
                             for(Object object : annotationNode.values){
                                 if(object instanceof String[]){
                                     for(String s : (String[])object){
-                                        if((s.equals("AGENT")&&!Agent.isAgent)
-                                        ||(s.equals("INJECTOR")&&Agent.isAgent)){
+                                        if((s.equals("AGENT")&&!Bootstrap.isAgent)
+                                        ||(s.equals("INJECTOR")&& Bootstrap.isAgent)){
                                             removeMethods.add(methodNode);
                                             break;
                                         }
@@ -122,7 +120,7 @@ public class Mapper {
                 for (AbstractInsnNode insnNode : methodNode.instructions) {
                     if (insnNode instanceof MethodInsnNode) {
                         if(isObfibleClass(((MethodInsnNode) insnNode).owner)) {
-                            Class<?> owner=Agent.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
+                            Class<?> owner= Bootstrap.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
 
                             ((MethodInsnNode) insnNode).name = getObfMethod(((MethodInsnNode) insnNode).name,
                                     owner, ((MethodInsnNode) insnNode).desc);
@@ -134,7 +132,7 @@ public class Mapper {
                     }
                     if (insnNode instanceof FieldInsnNode) {
                         if(isObfibleClass(((FieldInsnNode) insnNode).owner)) {
-                            Class<?> owner=Agent.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
+                            Class<?> owner= Bootstrap.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
                             ((FieldInsnNode) insnNode).name = getObfField(((FieldInsnNode) insnNode).name, owner);
                             ((FieldInsnNode) insnNode).owner = getObfClass(((FieldInsnNode) insnNode).owner);
                         }
@@ -184,8 +182,8 @@ public class Mapper {
                             for(Object object : annotationNode.values){
                                 if(object instanceof String[]){
                                     for(String s : (String[])object){
-                                        if((s.equals("AGENT")&&!Agent.isAgent)
-                                                ||(s.equals("INJECTOR")&&Agent.isAgent)){
+                                        if((s.equals("AGENT")&&!Bootstrap.isAgent)
+                                                ||(s.equals("INJECTOR")&& Bootstrap.isAgent)){
                                             removeField.add(fieldNode);
                                             break;
                                         }

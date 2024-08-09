@@ -1,6 +1,6 @@
 package com.fun.utils.version.fields;
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.MinecraftVersion;
 import com.fun.inject.utils.ReflectionUtils;
@@ -99,23 +99,23 @@ public enum Fields {
     }
 
     public String getName(){
-        VField V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VField V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1.obf_name;
-        VField V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VField V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2.obf_name;
         VField V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.obf_name;
-        Agent.logger.error("cant find fieldName");
+        System.out.println("cant find fieldName");
         return null;
     }
     public VField getVFiled(){
-        VField V1=map.get(Agent.minecraftType).get(Agent.minecraftVersion);
+        VField V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
         if(V1!=null)return V1;
-        VField V2=map.get(MinecraftType.VANILLA).get(Agent.minecraftVersion);
+        VField V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
         if(V2!=null)return V2;
         VField V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3;
-        Agent.logger.error("cant find VFiled");
+        System.out.println("cant find VFiled");
         return null;
     }
 

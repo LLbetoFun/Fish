@@ -1,6 +1,6 @@
 package com.fun.network.packets;
 
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.MinecraftVersion;
 import com.fun.network.IPacket;
 import com.fun.network.IReviewable;
@@ -17,14 +17,14 @@ public class PacketMCVer implements IPacket, IReviewable {
 
     @Override
     public void process() {
-        Agent.minecraftVersion= getVersion();
-        ver= String.valueOf(Agent.minecraftVersion.ordinal());
-        System.out.println(ver);
+        Bootstrap.minecraftVersion= getVersion();
+        ver= String.valueOf(Bootstrap.minecraftVersion.ordinal());
+        //System.out.println(ver);
     }
 
     @Override
     public void review() {
-        Agent.minecraftVersion= MinecraftVersion.values()[Integer.parseInt(ver)];
+        Bootstrap.minecraftVersion= MinecraftVersion.values()[Integer.parseInt(ver)];
     }
 
 

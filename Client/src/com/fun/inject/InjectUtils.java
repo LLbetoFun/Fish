@@ -7,8 +7,6 @@ import com.fun.network.packets.PacketDestroy;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.ptr.IntByReference;
-import com.sun.tools.attach.VirtualMachine;
-import com.sun.tools.attach.VirtualMachineDescriptor;
 import com.fun.network.TCPClient;
 import org.apache.commons.compress.utils.IOUtils;
 
@@ -81,15 +79,15 @@ public class InjectUtils {
     }
 
     public static void redefineClass(Class<?> clazz, byte[] newByte) throws UnmodifiableClassException, ClassNotFoundException {
-        Agent.instrumentation.redefineClass(clazz, newByte);
+        Bootstrap.instrumentation.redefineClass(clazz, newByte);
     }
 
     public static void destroyClient() {
-        if(!Agent.isAgent){
-            TCPClient.send(Agent.SERVERPORT,new PacketDestroy());
+        if(!Bootstrap.isAgent){
+            TCPClient.send(Bootstrap.SERVERPORT,new PacketDestroy());
             return;
         }
-        Agent.instrumentation.removeTransformer(Agent.transformer);
+        Bootstrap.instrumentation.removeTransformer(Bootstrap.transformer);
         Transformers.transformers.forEach(it -> {
             try {
                 InjectUtils.redefineClass(it.getClazz(), it.getOldBytes());
@@ -98,11 +96,12 @@ public class InjectUtils {
             }
         });
         try {
-            Agent.findClass("com.fun.client.FunGhostClient").getDeclaredMethod("destroyClient").invoke(null);
+            Bootstrap.findClass("com.fun.client.FunGhostClient").getDeclaredMethod("destroyClient").invoke(null);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
 
         }
+        NativeUtils.destroy();
 
 
         //NativeUtils.freeLibrary();

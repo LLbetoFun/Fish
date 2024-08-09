@@ -6,6 +6,7 @@ import com.fun.client.mods.Category;
 import com.fun.client.mods.VModule;
 import com.fun.client.settings.Setting;
 import com.fun.client.utils.Rotation.Rotation;
+import com.fun.eventapi.event.events.EventAttackReach;
 import com.fun.eventapi.event.events.EventMotion;
 import com.fun.eventapi.event.events.EventStrafe;
 import com.fun.eventapi.event.events.EventUpdate;
@@ -31,6 +32,14 @@ public class KillAura extends VModule
     public Setting slientMove=new Setting("SlientMove",this,true);
     public Setting keepSprint=new Setting("KeepSprint",this,false);
     public Setting CPS = new Setting("CPS", this, 12, 0, 20, true);
+    public Setting rangeMin = new Setting("RangeMin", this, 3.0, 3.0, 6.0, false);
+    public Setting rangeMax = new Setting("RangeMax", this, 6.0, 3.0, 6.0, false);
+
+    @Override
+    public void onAttackReach(EventAttackReach event) {
+        super.onAttackReach(event);
+        event.reach= rangeMax.getValDouble()+(rangeMin.getValDouble()-rangeMax.getValDouble())*Math.random();
+    }
 
     @Override
     public void onUpdate(EventUpdate event) {
@@ -49,7 +58,7 @@ public class KillAura extends VModule
         currentRotation= RotationUtils.limitAngleChange(new Rotation(currentRotation),new Rotation(targetRotation), (float) speed).toVec2f();
 
         FunGhostClient.rotationManager.setRation(currentRotation);
-        if(mc.hitResult instanceof EntityHitResult&&Math.random() <CPS.getValDouble()/20){
+        if(mc.hitResult instanceof EntityHitResult&&((EntityHitResult) mc.hitResult).getEntity()==target&&Math.random() <CPS.getValDouble()/20){
             mc.gameMode.attack(mc.player,((EntityHitResult) mc.hitResult).getEntity());
             mc.player.swing(InteractionHand.MAIN_HAND);
         }

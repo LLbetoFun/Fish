@@ -2,10 +2,8 @@ package com.fun.inject.injection.wrapper;
 
 
 import com.fun.utils.version.clazz.Classes;
-import com.fun.inject.Agent;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumHand;
 
 public class Wrapper {
 
@@ -19,7 +17,7 @@ public class Wrapper {
 
         if (obfName != null) {
             try {
-                clazz = Agent.findClass(obfName);
+                clazz = Bootstrap.findClass(obfName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

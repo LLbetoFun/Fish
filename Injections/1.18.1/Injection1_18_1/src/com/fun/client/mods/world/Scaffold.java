@@ -7,6 +7,7 @@ import com.fun.client.mods.combat.AimBot;
 import com.fun.client.mods.render.notify.Notification;
 import com.fun.client.settings.Setting;
 import com.fun.client.utils.Rotation.Rotation;
+import com.fun.eventapi.event.events.EventStrafe;
 import com.fun.eventapi.event.events.EventUpdate;
 import com.fun.utils.math.MathHelper;
 import com.fun.utils.rotation.RotationUtils;
@@ -48,6 +49,16 @@ public class Scaffold extends VModule {
             return rayCast.getValBoolean();
         }
     };
+
+    @Override
+    public void onStrafe(EventStrafe event) {
+        super.onStrafe(event);
+        event.strafe*= (float) (moveSpeed.getValDouble()/100f);
+        event.forward*= (float) (moveSpeed.getValDouble()/100f);
+    }
+
+    public Setting moveSpeed = new Setting("MoveSpeed", this, 90, 0, 100, true);
+
     public PlaceInfo placeInfo;
     public Vector2f targetRotation=new Vector2f();
     public Vector2f currentRotation=new Vector2f();
@@ -112,6 +123,7 @@ public class Scaffold extends VModule {
                 mc.player.swing(InteractionHand.MAIN_HAND);
             }
         }
+
     }
 
     @Override

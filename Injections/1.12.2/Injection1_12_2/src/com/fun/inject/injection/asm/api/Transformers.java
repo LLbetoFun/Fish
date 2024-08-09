@@ -18,7 +18,6 @@ import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 
 public class Transformers {
 
-    public static Logger logger = LogManager.getLogger("Transformers");
 
     public static List<Transformer> transformers = new ArrayList<>();
     public static boolean contains(String[] s1,String target){

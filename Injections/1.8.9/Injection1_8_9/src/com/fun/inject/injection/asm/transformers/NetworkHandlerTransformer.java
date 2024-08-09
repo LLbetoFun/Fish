@@ -30,7 +30,7 @@ public class NetworkHandlerTransformer extends Transformer {
         mn.instructions.insert(list);
     }
     public static boolean onPacket(Object packet){
-        //Agent.logger.info(Mappings.getUnobfClass(packet.getClass().getName()));
+        //System.out.println(Mappings.getUnobfClass(packet.getClass().getName()));
         return EventManager.call(new EventPacket(packet)).cancel;
     }
 }

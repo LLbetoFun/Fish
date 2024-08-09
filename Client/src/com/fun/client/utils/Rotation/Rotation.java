@@ -7,11 +7,11 @@ import javax.vecmath.Vector2f;
 
 public class Rotation {
     public static MinecraftWrapper mc=MinecraftWrapper.get();
-    public float yaw,pitch;
+    public double yaw,pitch;
     public boolean tag=false;
-    public Rotation(float yawIn,float pitchIn){
-        this.yaw= yawIn>180||yawIn<180? MathHelper.wrapAngleTo180_float(yawIn):yawIn;
-        this.pitch=pitchIn>90||pitchIn<-90?MathHelper.wrapAngleTo180_float(pitchIn):pitchIn;
+    public Rotation(double yawIn,double pitchIn){
+        this.yaw= yawIn>180||yawIn<180? MathHelper.wrapAngleTo180_double(yawIn):yawIn;
+        this.pitch=pitchIn>90||pitchIn<-90?MathHelper.wrapAngleTo180_double(pitchIn):pitchIn;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Rotation {
 
 
     public Vector2f toVec2f(){
-        return new Vector2f(pitch,yaw);
+        return new Vector2f((float) pitch, (float) yaw);
     }
 
 
@@ -34,11 +34,11 @@ public class Rotation {
         return super.equals(obj)||(obj instanceof Rotation&&((Rotation) obj).toVec2f().equals(this.toVec2f()))||(obj instanceof Vector2f&&obj.equals(this.toVec2f()));
     }
 
-    public float getPitch() {
+    public double getPitch() {
         return pitch;
     }
 
-    public float getYaw() {
+    public double getYaw() {
         return yaw;
     }
     public static Rotation player(){

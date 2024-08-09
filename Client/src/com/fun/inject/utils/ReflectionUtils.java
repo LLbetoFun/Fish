@@ -4,7 +4,6 @@ package com.fun.inject.utils;
 import com.fun.utils.version.clazz.Classes;
 import com.fun.utils.version.fields.Fields;
 import com.fun.utils.version.methods.Methods;
-import com.fun.inject.Agent;
 
 
 import java.lang.reflect.*;
@@ -32,7 +31,7 @@ public class ReflectionUtils {
             c = c.getSuperclass();
         }
 
-        Agent.logger.error("cant find {} {}",instance.getClass().getName(),name);
+        System.out.printf("cant find %s %s%n",instance.getClass().getName(),name);
         return null;
     }
 
@@ -179,7 +178,7 @@ public class ReflectionUtils {
 
             c = c.getSuperclass();
         }
-        Agent.logger.error("cant find {} {}",instance.getClass().getName(),name);
+        System.out.printf("cant find %s %s%n",instance.getClass().getName(),name);
 
         return null;
     }

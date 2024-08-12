@@ -67,7 +67,7 @@ public class Reach extends Module {
         }
 
         if (verticalCheck.getValBoolean()) {
-            float pitch = mc.getPlayer().getPitch(); // 获取玩家视角的俯仰角
+            float pitch = mc.getPlayer().getPitch(); // 玩家俯仰角
             float maxAngle = (float) verticalAngle.getValDouble();
             return !(pitch > maxAngle) && !(pitch < -maxAngle);
         }

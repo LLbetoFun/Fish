@@ -57,7 +57,7 @@ public class Velocity extends Module {
         double playerYaw = mc.getPlayer().getYaw();
 
         double angleDifference = Math.abs(playerYaw - angle);
-        return angleDifference <= fov.getValDouble() / 2; // 正确检查视野范围内
+        return angleDifference <= fov.getValDouble() / 2;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class Velocity extends Module {
                 S12PacketEntityVelocityWrapper packetVelocity = new S12PacketEntityVelocityWrapper(packet.packet);
                 if (packetVelocity.getEntityID() == mc.getPlayer().getEntityID()) {
                     target = registerManager.vModuleManager.target.target;
-                    if (target != null && isTargetInFOV(target)) { // 仅在目标存在且在视野范围内继续执行
+                    if (target != null && isTargetInFOV(target)) { //FOV
                         if (this.mode.getValString().equalsIgnoreCase("Vanilla")) {
                             if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {
                                 return;
@@ -93,7 +93,7 @@ public class Velocity extends Module {
     public void onMoment(EventMoment event) {
         super.onMoment(event);
         target = registerManager.vModuleManager.target.target;
-        if (target != null && isTargetInFOV(target)) { // 仅在目标存在且在视野范围内继续执行
+        if (target != null && isTargetInFOV(target)) { //FOV
             if (mode.getValString().equalsIgnoreCase("JumpReset")) {
                 if (mc.getPlayer().getHurtTime() == 9 && mc.getPlayer().isOnGround()) {
                     if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {

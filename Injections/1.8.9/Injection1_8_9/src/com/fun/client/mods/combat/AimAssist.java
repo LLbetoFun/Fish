@@ -33,7 +33,7 @@ public class AimAssist extends Module {
     public Setting onRotate = new Setting("OnRotate", this, false);
     public Setting speed = new Setting("Speed", this, 30, 0, 100, false);
     public Setting fov = new Setting("FOV", this, 90, 0, 360, true);
-    public Setting minFov = new Setting("MinFOV", this, 10, 0, 60, true);  // 添加最小FOV设置
+    public Setting minFov = new Setting("MinFOV", this, 10, 0, 60, true);
 
     @Override
     public void onUpdate(EventUpdate event) {
@@ -119,7 +119,7 @@ public class AimAssist extends Module {
     private boolean isInFOV(Rotation targetRotation, EntityPlayerSPWrapper player) {
         float yawDifference = getAngleDifference(player.getYaw(), targetRotation.getYaw());
         float maxFov = (float) fov.getValDouble() / 2;
-        float minFovValue = (float) minFov.getValDouble() / 2;  // 获取最小FOV值
+        float minFovValue = (float) minFov.getValDouble() / 2;  // FOV
         return Math.abs(yawDifference) <= maxFov && Math.abs(yawDifference) >= minFovValue;
     }
 }

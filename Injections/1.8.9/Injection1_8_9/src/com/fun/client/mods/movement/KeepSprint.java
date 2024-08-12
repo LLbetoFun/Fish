@@ -12,7 +12,7 @@ public class KeepSprint extends Module {
     public Setting changeChanceSetting;
     public KeepSprint(String nameIn) {
         super(Keyboard.KEY_R, nameIn, Category.Movement);
-        this.changeChanceSetting = new Setting("Chance", this, 50.0, 0.0, 100.0, false);
+        this.changeChanceSetting = new Setting("Chance", this, 100.0, 0.0, 100.0, false);
     }
     @Override
     public void onUpdate(EventUpdate event) {

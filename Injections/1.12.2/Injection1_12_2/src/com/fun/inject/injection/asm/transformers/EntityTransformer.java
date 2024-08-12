@@ -2,11 +2,11 @@ package com.fun.inject.injection.asm.transformers;
 
 import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventStrafe;
+import com.fun.inject.In9ectManager;
 import com.fun.inject.injection.asm.api.Mixin;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.utils.version.clazz.Classes;
 import com.fun.utils.version.methods.Methods;
-import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftVersion;
 import org.objectweb.asm.Opcodes;
@@ -21,8 +21,8 @@ public class EntityTransformer extends Transformer {
     }
     @Mixin(method = Methods.moveFlying_Entity)
     public void onMoveFly(MethodNode methodNode) {
-        final int ASTRAFE = Bootstrap.minecraftVersion== MinecraftVersion.VER_189||
-                Bootstrap.minecraftVersion== MinecraftVersion.VER_1710?0:1;
+        final int ASTRAFE = In9ectManager.minecraftVersion== MinecraftVersion.VER_189||
+                In9ectManager.minecraftVersion== MinecraftVersion.VER_1710?0:1;
         InsnList list = new InsnList();
         //Agent.System.out.println("moveFlying");
         int j =0;

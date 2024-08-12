@@ -1,6 +1,7 @@
 package com.fun.inject.mapper;
 
 import com.fun.inject.Bootstrap;
+import com.fun.inject.In9ectManager;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.utils.FishClassWriter;
@@ -120,7 +121,7 @@ public class Mapper {
                 for (AbstractInsnNode insnNode : methodNode.instructions) {
                     if (insnNode instanceof MethodInsnNode) {
                         if(isObfibleClass(((MethodInsnNode) insnNode).owner)) {
-                            Class<?> owner= Bootstrap.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
+                            Class<?> owner= In9ectManager.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
 
                             ((MethodInsnNode) insnNode).name = getObfMethod(((MethodInsnNode) insnNode).name,
                                     owner, ((MethodInsnNode) insnNode).desc);
@@ -132,7 +133,7 @@ public class Mapper {
                     }
                     if (insnNode instanceof FieldInsnNode) {
                         if(isObfibleClass(((FieldInsnNode) insnNode).owner)) {
-                            Class<?> owner= Bootstrap.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
+                            Class<?> owner= In9ectManager.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
                             ((FieldInsnNode) insnNode).name = getObfField(((FieldInsnNode) insnNode).name, owner);
                             ((FieldInsnNode) insnNode).owner = getObfClass(((FieldInsnNode) insnNode).owner);
                         }

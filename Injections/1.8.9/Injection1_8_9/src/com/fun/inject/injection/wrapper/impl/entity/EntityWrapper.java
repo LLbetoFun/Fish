@@ -40,6 +40,9 @@ public class EntityWrapper extends Wrapper {
 
         this.obj = entityObj;
     }
+    public Entity get(){
+        return (Entity) obj;
+    }
     public boolean isSprinting() {
         return (boolean) Methods.isSprinting_Entity.invoke(obj);
     }

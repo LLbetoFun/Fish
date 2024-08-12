@@ -1,9 +1,6 @@
 package com.fun.utils.version.clazz;
 
-import com.fun.inject.Bootstrap;
-import com.fun.inject.Mappings;
-import com.fun.inject.MinecraftType;
-import com.fun.inject.MinecraftVersion;
+import com.fun.inject.*;
 import com.fun.utils.version.Version;
 
 public class VClass extends Version {
@@ -16,7 +13,7 @@ public class VClass extends Version {
             this.obf_name = Mappings.getObfClass(name);
             this.friendly_name=name;
             try {
-                this.clazz = Bootstrap.findClass(this.obf_name);
+                this.clazz = In9ectManager.findClass(this.obf_name);
             } catch (ClassNotFoundException e) {
                 if(this.clazz == null){
                     try {

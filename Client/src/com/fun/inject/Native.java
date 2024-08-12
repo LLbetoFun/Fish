@@ -1,7 +1,8 @@
 package com.fun.inject;
 
 
-
+import com.fun.inject.transform.GameClassTransformer;
+import com.fun.inject.transform.IClassTransformer;
 
 public class Native{
     public Class<?> nativeUtils;
@@ -10,7 +11,7 @@ public class Native{
     }
     public Native(){
     }
-    public void addTransformer(IClassTransformer transformer,boolean b) {
+    public void addTransformer(IClassTransformer transformer, boolean b) {
         NativeUtils.transformers.add(transformer);
     }
 
@@ -56,7 +57,7 @@ public class Native{
         NativeUtils.doneTransform();
     }
 
-    public void removeTransformer(Bootstrap.GameClassTransformer transformer) {
+    public void removeTransformer(GameClassTransformer transformer) {
         NativeUtils.transformers.remove(transformer);
     }
 }

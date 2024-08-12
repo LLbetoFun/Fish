@@ -1,9 +1,9 @@
 package com.fun.inject.injection.asm.api;
 
 
+import com.fun.inject.In9ectManager;
 import com.fun.inject.mapper.Mapper;
 import com.fun.utils.version.clazz.Classes;
-import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import org.objectweb.asm.Type;
 
@@ -26,7 +26,7 @@ public class Transformer {
         obfName = Mappings.getObfClass(name);
         if (obfName != null) {
             try {
-                clazz = Bootstrap.findClass(obfName);
+                clazz = In9ectManager.findClass(obfName);
                 //oldBytes = InjectUtils.getClassBytes(clazz);
             } catch (Exception e) {
                 e.printStackTrace();

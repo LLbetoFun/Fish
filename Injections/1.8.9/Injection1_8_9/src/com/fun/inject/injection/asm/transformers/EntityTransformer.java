@@ -1,14 +1,19 @@
 package com.fun.inject.injection.asm.transformers;
 
+import com.fun.client.FunGhostClient;
 import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventStrafe;
+import com.fun.inject.In9ectManager;
+import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Mixin;
 import com.fun.inject.injection.asm.api.Transformer;
+import com.fun.inject.mapper.Mapper;
 import com.fun.utils.version.clazz.Classes;
 import com.fun.utils.version.methods.Methods;
-import com.fun.inject.Bootstrap;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftVersion;
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.entity.Entity;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -21,8 +26,8 @@ public class EntityTransformer extends Transformer {
     }
     @Mixin(method = Methods.moveFlying_Entity)
     public void onMoveFly(MethodNode methodNode) {
-        final int ASTRAFE = Bootstrap.minecraftVersion== MinecraftVersion.VER_189||
-                Bootstrap.minecraftVersion== MinecraftVersion.VER_1710?0:1;
+        final int ASTRAFE = In9ectManager.minecraftVersion== MinecraftVersion.VER_189||
+                In9ectManager.minecraftVersion== MinecraftVersion.VER_1710?0:1;
         InsnList list = new InsnList();
         //Agent.System.out.println("moveFlying");
         int j =0;
@@ -123,24 +128,39 @@ public class EntityTransformer extends Transformer {
         if(entity.getClass().getName().equals(Mappings.getObfClass("net/minecraft/client/entity/EntityPlayerSP").replace('/','.'))) EventManager.call(eventStrafe);
         return eventStrafe;
     }
-    /*
-       public void a(float var1, float var2, float var3) {
-        float var4 = var1 * var1 + var2 * var2;
-        if (!(var4 < 1.0E-4F)) {
-            var4 = ns.c(var4);
-            if (var4 < 1.0F) {
-                var4 = 1.0F;
+    @Inject(method = "getLook",descriptor = "(F)Lnet/minecraft/util/Vec3;")
+    public void getLookAngle(MethodNode methodNode){
+        for (int i = 0; i < methodNode.instructions.size(); ++i) {
+            AbstractInsnNode node = methodNode.instructions.get(i);
+            if(node instanceof FieldInsnNode){
+                if(((FieldInsnNode) node).name.equals(Mapper.getObfField("rotationYaw","net/minecraft/entity/Entity"))
+                        ||((FieldInsnNode) node).name.equals(Mapper.getObfField("prevRotationYaw","net/minecraft/entity/Entity"))
+                        &&((FieldInsnNode) node).desc.equals("F")){
+                    methodNode.instructions.insertBefore(node,new VarInsnNode(Opcodes.FLOAD,1));
+                    methodNode.instructions.insertBefore(node,new MethodInsnNode(Opcodes.INVOKESTATIC,Type.getInternalName(EntityTransformer.class),"yaw","(Ljava/lang/Object;F)F"));
+                    methodNode.instructions.remove(node);
+                }
+                if(((FieldInsnNode) node).name.equals(Mapper.getObfField("prevRotationPitch","net/minecraft/entity/Entity"))
+                        ||((FieldInsnNode) node).name.equals(Mapper.getObfField("rotationPitch","net/minecraft/entity/Entity"))
+                        &&((FieldInsnNode) node).desc.equals("F")){
+                    methodNode.instructions.insertBefore(node,new VarInsnNode(Opcodes.FLOAD,1));
+                    methodNode.instructions.insertBefore(node,new MethodInsnNode(Opcodes.INVOKESTATIC,Type.getInternalName(EntityTransformer.class),"pitch","(Ljava/lang/Object;F)F"));
+                    methodNode.instructions.remove(node);
+                }
             }
-
-            var4 = var3 / var4;
-            var1 *= var4;
-            var2 *= var4;
-            float var5 = ns.a(this.y * 3.1415927F / 180.0F);
-            float var6 = ns.b(this.y * 3.1415927F / 180.0F);
-            this.v += (double)(var1 * var6 - var2 * var5);
-            this.x += (double)(var2 * var6 + var1 * var5);
         }
+    }//getLook (F)Lnet/minecraft/util/Vec3;
+    public static float yaw(Object entity,float f){
+        if(entity instanceof EntityPlayerSP)
+            return FunGhostClient.rotationManager.getRation().y;
+        else if(entity instanceof Entity) return ((Entity) entity).rotationYaw;
+        throw new RuntimeException("arg0 isn't Entity");
     }
+    public static float pitch(Object entity,float f){//getViewVector
 
-     */
+        if(entity instanceof EntityPlayerSP)
+            return FunGhostClient.rotationManager.getRation().x;
+        else if(entity instanceof Entity) return ((Entity) entity).rotationPitch;
+        throw new RuntimeException("arg0 isn't Entity");
+    }
 }

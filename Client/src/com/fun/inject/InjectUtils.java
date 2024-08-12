@@ -79,7 +79,7 @@ public class InjectUtils {
     }
 
     public static void redefineClass(Class<?> clazz, byte[] newByte) throws UnmodifiableClassException, ClassNotFoundException {
-        Bootstrap.instrumentation.redefineClass(clazz, newByte);
+        In9ectManager.instrumentation.redefineClass(clazz, newByte);
     }
 
     public static void destroyClient() {
@@ -87,7 +87,7 @@ public class InjectUtils {
             TCPClient.send(Bootstrap.SERVERPORT,new PacketDestroy());
             return;
         }
-        Bootstrap.instrumentation.removeTransformer(Bootstrap.transformer);
+        In9ectManager.instrumentation.removeTransformer(In9ectManager.transformer);
         Transformers.transformers.forEach(it -> {
             try {
                 InjectUtils.redefineClass(it.getClazz(), it.getOldBytes());
@@ -96,7 +96,7 @@ public class InjectUtils {
             }
         });
         try {
-            Bootstrap.findClass("com.fun.client.FunGhostClient").getDeclaredMethod("destroyClient").invoke(null);
+            In9ectManager.findClass("com.fun.client.FunGhostClient").getDeclaredMethod("destroyClient").invoke(null);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
             e.printStackTrace();
 

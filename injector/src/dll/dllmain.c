@@ -340,7 +340,7 @@ extern JNIEXPORT jvmtiError JNICALL HookSetEventNotificationMode(jvmtiEnv* env,
 extern JNIEXPORT jvmtiError JNICALL HookGetLoadedClasses(jvmtiEnv* env,
                                                jint* class_count_ptr,
                                                jclass** classes_ptr){
-    *class_count_ptr=1;
+    *class_count_ptr=0;
     return 0;
 }
 extern JNIEXPORT void JNICALL setEventNotificationMode
@@ -561,27 +561,34 @@ extern void JNICALL Load(JAVA* java){
     (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,buffer);
     //return;
     //printEx(java);
+    if(0) {
+        jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
+        jmethodID sm = (*java->jniEnv)->GetStaticMethodID(java->jniEnv, sk, "sm", "()V");
+        (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv, sk, sm);
+        return;
+    }
     jclass agent = findClass(java->jniEnv, "com.fun.inject.Bootstrap");//com.fun.inject.Bootstrap
 
     JNINativeMethod methods[] = {
-            {"inject","()V",(void*) Java_Inject}
+            {"in9ect","()V",(void*) Java_Inject}
     };
     if(agent)(*java->jniEnv)->RegisterNatives(java->jniEnv,agent, methods, 1);
-//    if(0) {
-//        jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
+    jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"magic","()V");
+
+    (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
+
+//  if(0) {
+//      jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
 //      jmethodID sm = (*java->jniEnv)->GetStaticMethodID(java->jniEnv, sk, "sm", "()V");
 //      (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv, sk, sm);
 //      return;
 //  }
-    jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"startInjectThread","()V");
-    (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
-}
+}//InjectManager
 
 extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
         JAVA java;
         java.jniEnv=env;
         HMODULE hJvm = GetModuleHandle("jvm.dll");
-
         typedef jint(JNICALL *fnJNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *);
         fnJNI_GetCreatedJavaVMs JNI_GetCreatedJavaVMs;
         JNI_GetCreatedJavaVMs = (fnJNI_GetCreatedJavaVMs) GetProcAddress(hJvm,

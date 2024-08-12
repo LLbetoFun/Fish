@@ -1,7 +1,7 @@
 package com.fun.inject.define;
 
-import com.fun.hook.Printer;
 import com.fun.inject.Bootstrap;
+import com.fun.inject.In9ectManager;
 import com.fun.inject.NativeUtils;
 import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.inject.utils.ReflectionUtils;
@@ -15,7 +15,7 @@ public class Definer {
     public static void defineClass(String className){
         if(className==null) return;
         className=className.replace('/', '.');
-        byte[] bytes = Bootstrap.classes.get(className);
+        byte[] bytes = In9ectManager.classes.get(className);
         ClassNode cn;
         try {
             cn = Transformers.node(bytes);
@@ -41,8 +41,8 @@ public class Definer {
                     }
                 }
                 try {
-                    if(ReflectionUtils.invokeMethod(Bootstrap.classLoader,"findLoadedClass",new Class[]{String.class},className)!=null)return;
-                    NativeUtils.defineClass(Bootstrap.classLoader, bytes);
+                    if(ReflectionUtils.invokeMethod(In9ectManager.classLoader,"findLoadedClass",new Class[]{String.class},className)!=null)return;
+                    NativeUtils.defineClass(In9ectManager.classLoader, bytes);
                 }
                 catch (Exception e){
                     e.printStackTrace();

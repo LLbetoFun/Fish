@@ -3,12 +3,12 @@ package com.fun.client.mods;
 import com.fun.client.mods.combat.*;
 import com.fun.client.mods.movement.Flight;
 import com.fun.client.mods.movement.KeepSprint;
-import com.fun.client.mods.render.ESP;
-import com.fun.client.mods.render.HUD;
-import com.fun.client.mods.render.NotificationModule;
-import com.fun.client.mods.render.Rotations;
+import com.fun.client.mods.movement.StrafeFix;
+import com.fun.client.mods.player.ChestStealer;
+import com.fun.client.mods.render.*;
 import com.fun.client.mods.world.Backtrack;
 import com.fun.client.mods.world.Eagle;
+import com.fun.client.mods.world.Scaffold;
 import com.fun.client.utils.Rotation.Rotation;
 import com.fun.inject.injection.wrapper.impl.setting.GameSettingsWrapper;
 import com.fun.utils.version.methods.Methods;
@@ -30,6 +30,11 @@ public class VModuleManager {
     public Target target;
     public KeepSprint keepSprint;
     public Rotations rotations;
+    public FreeLook freeLook;
+    public KillAura killAura=new KillAura();
+    public Scaffold scaffold=new Scaffold();
+    public StrafeFix strafeFix=new StrafeFix();
+    public ChestStealer chestStealer=new ChestStealer();
     public void init(){
         try{
             backtrack = new Backtrack();
@@ -47,6 +52,7 @@ public class VModuleManager {
             notification = new NotificationModule();
             target = new Target();
             rotations=new Rotations();
+            freeLook=new FreeLook();
         }
         catch(Exception e){
             e.printStackTrace();

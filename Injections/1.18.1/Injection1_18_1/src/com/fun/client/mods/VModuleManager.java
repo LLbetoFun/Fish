@@ -33,6 +33,7 @@ public class VModuleManager {
     public Scaffold scaffold;
     public Velocity velocity;
     public ChestStealer chestStealer;
+
     public void init(){
         //Minecraft.getInstance().getWindow().setTitle("钓鱼岛");
         sprint=new KeepSprint();

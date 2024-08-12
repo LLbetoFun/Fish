@@ -1,14 +1,8 @@
 package com.fun.inject;
 
 
-import com.fun.inject.utils.FishClassWriter;
-import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.utils.file.IOUtils;
-import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -50,7 +44,7 @@ public class Mappings {
     static {
         if(Bootstrap.isAgent){
             try {
-                readMappings(Bootstrap.minecraftVersion, Bootstrap.minecraftType);
+                readMappings(In9ectManager.minecraftVersion, In9ectManager.minecraftType);
             } catch (IOException e) {
                 e.printStackTrace();
             }

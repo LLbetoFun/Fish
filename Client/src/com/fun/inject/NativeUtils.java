@@ -1,6 +1,7 @@
 package com.fun.inject;
 
-import java.lang.instrument.IllegalClassFormatException;
+import com.fun.inject.transform.IClassTransformer;
+
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.ProtectionDomain;

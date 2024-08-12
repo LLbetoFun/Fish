@@ -3,14 +3,14 @@ package com.fun.inject.magic;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Vector;
 import com.fun.hook.Hooks;
 
 
-import com.fun.inject.Bootstrap;
-import com.fun.inject.IClassTransformer;
+import com.fun.inject.transform.IClassTransformer;
 import com.fun.inject.NativeUtils;
 
 import com.fun.inject.injection.asm.api.Transformers;
@@ -129,7 +129,92 @@ public class AntiClassScanner {
                         }
                         mn.instructions.insertBefore(insnNode,insnList);
                     }
+                    if(mn.name.equals("forName")){
+                        LabelNode l=new LabelNode();
+                        InsnList insnList=new InsnList();
+                        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(Hooks.class),"hookFindClass","(Ljava/lang/Class;)Ljava/lang/Class;"));
+                        AbstractInsnNode insnNode=mn.instructions.get(mn.instructions.size()-1);
+                        for (int i = 0; i < mn.instructions.size(); ++i) {
+                            AbstractInsnNode n = mn.instructions.get(i);
+                            if(n.getOpcode()==Opcodes.ARETURN){
+                                insnNode=n;
+                                break;
+                            }
+                        }
+                        mn.instructions.insertBefore(insnNode,insnList);
+                    }
 
+                }
+                byte[] newBytes=Transformers.rewriteClass(node);
+                try {
+                    FileUtils.writeByteArrayToFile(new File(System.getProperty("user.home")+"/.fish",className + ".class"),
+                            newBytes);
+                } catch (IOException e) {throw new RuntimeException(e);}
+                return newBytes;
+            }
+
+
+            if(className.replace('/','.').equals("java.lang.reflect.Field")){
+                ClassNode node= Transformers.node(classfileBuffer);
+                for(MethodNode mn: node.methods) {
+                    if (mn.name.equals("getName")) {
+                        LabelNode l=new LabelNode();
+                        InsnList insnList=new InsnList();
+                        insnList.add(new VarInsnNode(Opcodes.ALOAD,0));
+                        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(Hooks.class),"hookGetFieldName","(Ljava/lang/String;Ljava/lang/reflect/Field;)Ljava/lang/String;"));
+                        AbstractInsnNode insnNode=mn.instructions.get(mn.instructions.size()-1);
+                        for (int i = 0; i < mn.instructions.size(); ++i) {
+                            AbstractInsnNode n = mn.instructions.get(i);
+                            if(n.getOpcode()==Opcodes.ARETURN){
+                                insnNode=n;
+                                break;
+                            }
+                        }
+                        mn.instructions.insertBefore(insnNode,insnList);
+                    }
+                    if (mn.name.equals("get")) {
+                        LabelNode l=new LabelNode();
+                        InsnList insnList=new InsnList();
+                        insnList.add(new VarInsnNode(Opcodes.ALOAD,0));
+                        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(Hooks.class),"hookGetFieldValue","(Ljava/lang/Object;Ljava/lang/reflect/Field;)Ljava/lang/Object;"));
+                        AbstractInsnNode insnNode=mn.instructions.get(mn.instructions.size()-1);
+                        for (int i = 0; i < mn.instructions.size(); ++i) {
+                            AbstractInsnNode n = mn.instructions.get(i);
+                            if(n.getOpcode()==Opcodes.ARETURN){
+                                insnNode=n;
+                                break;
+                            }
+                        }
+                        mn.instructions.insertBefore(insnNode,insnList);
+                    }
+                }
+                byte[] newBytes=Transformers.rewriteClass(node);
+                try {
+                    FileUtils.writeByteArrayToFile(new File(System.getProperty("user.home")+"/.fish",className + ".class"),
+                            newBytes);
+                } catch (IOException e) {throw new RuntimeException(e);}
+                return newBytes;
+            }
+
+
+            if(className.replace('/','.').equals("java.lang.reflect.Method")){
+                ClassNode node= Transformers.node(classfileBuffer);
+                for(MethodNode mn: node.methods) {
+                    if (mn.name.equals("getName")) {
+                        LabelNode l=new LabelNode();
+                        InsnList insnList=new InsnList();
+                        insnList.add(new VarInsnNode(Opcodes.ALOAD,0));
+                        insnList.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(Hooks.class),"hookGetMethodName","(Ljava/lang/String;Ljava/lang/reflect/Method;)Ljava/lang/String;"));
+                        AbstractInsnNode insnNode=mn.instructions.get(mn.instructions.size()-1);
+                        for (int i = 0; i < mn.instructions.size(); ++i) {
+                            AbstractInsnNode n = mn.instructions.get(i);
+                            if(n.getOpcode()==Opcodes.ARETURN){
+                                insnNode=n;
+                                break;
+                            }
+                        }
+                        mn.instructions.insertBefore(insnNode,insnList);
+                    }
                 }
                 byte[] newBytes=Transformers.rewriteClass(node);
                 try {
@@ -141,9 +226,9 @@ public class AntiClassScanner {
             return classfileBuffer;
         };
         NativeUtils.transformers.add(transformer);
-        //NativeUtils.messageBox("666","");
         if(NativeUtils.isModifiableClass(Class.class))NativeUtils.retransformClass(Class.class);
-        //NativeUtils.messageBox("999","");
+        if(NativeUtils.isModifiableClass(Method.class))NativeUtils.retransformClass(Method.class);
+        if(NativeUtils.isModifiableClass(Field.class))NativeUtils.retransformClass(Field.class);
         NativeUtils.transformers.remove(transformer);
         NativeUtils.doneTransform();
 

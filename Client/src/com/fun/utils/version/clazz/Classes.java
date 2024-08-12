@@ -1,9 +1,6 @@
 package com.fun.utils.version.clazz;
 
-import com.fun.inject.Bootstrap;
-import com.fun.inject.Mappings;
-import com.fun.inject.MinecraftType;
-import com.fun.inject.MinecraftVersion;
+import com.fun.inject.*;
 
 import java.util.HashMap;
 
@@ -73,7 +70,7 @@ public enum Classes {
         this.obf_name =Mappings.getObfClass(name);
         this.friendly_name=name;
         try {
-            this.clazz = Bootstrap.findClass(this.obf_name);
+            this.clazz = In9ectManager.findClass(this.obf_name);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -93,27 +90,27 @@ public enum Classes {
         }
     }
     public String getName(){
-        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
+        VClass V1=map.get(In9ectManager.minecraftType).get(In9ectManager.minecraftVersion);
         if(V1!=null)return V1.obf_name;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(In9ectManager.minecraftVersion);
         if(V2!=null)return V2.obf_name;
         VClass V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.obf_name;
         return null;
     }
     public Class<?> getClazz(){
-        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
+        VClass V1=map.get(In9ectManager.minecraftType).get(In9ectManager.minecraftVersion);
         if(V1!=null)return V1.clazz;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(In9ectManager.minecraftVersion);
         if(V2!=null)return V2.clazz;
         VClass V3=map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
         if(V3!=null)return V3.clazz;
         return null;
     }
     public VClass getVClass(){
-        VClass V1=map.get(Bootstrap.minecraftType).get(Bootstrap.minecraftVersion);
+        VClass V1=map.get(In9ectManager.minecraftType).get(In9ectManager.minecraftVersion);
         if(V1!=null)return V1;
-        VClass V2=map.get(MinecraftType.VANILLA).get(Bootstrap.minecraftVersion);
+        VClass V2=map.get(MinecraftType.VANILLA).get(In9ectManager.minecraftVersion);
         if(V2!=null)return V2;
         return map.get(MinecraftType.VANILLA).get(MinecraftVersion.VER_189);
     }

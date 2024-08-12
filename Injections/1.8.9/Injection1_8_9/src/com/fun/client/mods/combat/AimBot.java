@@ -20,5 +20,15 @@ public class AimBot extends Module {
         return new Vector2f(-(float) (Math.atan2(target.yCoord - player.yCoord, xz) / (Math.PI / 180)),
                 -(float) (Math.atan2(target.xCoord - player.xCoord, target.zCoord - player.zCoord) / (Math.PI / 180)));
     }
+    public static Vector2f aim(net.minecraft.util.Vec3 player, net.minecraft.util.Vec3 target) {
+        double x = target.xCoord - player.xCoord;
+        double z = target.zCoord - player.zCoord;
+        double xx = x * x;
+        double zz = z * z;
+        double xz = Math.sqrt(xx + zz);
+
+        return new Vector2f(-(float) (Math.atan2(target.yCoord - player.yCoord, xz) / (Math.PI / 180)),
+                -(float) (Math.atan2(target.xCoord - player.xCoord, target.zCoord - player.zCoord) / (Math.PI / 180)));
+    }
 
 }

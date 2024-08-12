@@ -1,92 +1,74 @@
 package com.fun.client.mods.combat;
 
+
+import com.fun.client.FunGhostClient;
 import com.fun.client.mods.Category;
 import com.fun.client.mods.VModule;
-import com.fun.eventapi.event.events.EventRender2D;
-import com.fun.client.font.FontManager;
-import com.fun.utils.math.PerlinNoise;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemSword;
-import org.lwjgl.util.vector.Vector2f;
+import com.fun.client.settings.Setting;
+import com.fun.client.utils.Rotation.Rotation;
+import com.fun.eventapi.event.events.EventAttackReach;
+import com.fun.eventapi.event.events.EventStrafe;
+import com.fun.eventapi.event.events.EventUpdate;
+import com.fun.inject.injection.wrapper.impl.entity.EntityWrapper;
+import com.fun.utils.rotation.RotationUtils;
+import net.minecraft.entity.Entity;
 
-import java.awt.*;
+import javax.vecmath.Vector2f;
 
-public class KillAura extends VModule {
-    public float range = 6.2173613F;
-    public float startYaw;
-    public float tempYaw;
-    public boolean pb;
-    public PerlinNoise pn=new PerlinNoise(0.2f);
-    public PerlinNoise rpn=new PerlinNoise(0.22f);
-    public PerlinNoise rpn2=new PerlinNoise(0.3f);
-    public PerlinNoise rpn3=new PerlinNoise(0.1f);
-    public PerlinNoise rpn4=new PerlinNoise(0.09f);
-    public PerlinNoise rpn5=new PerlinNoise(0.12f);
-    private int unblocklag;
-    public float aimTickYaw=0;
-    public float aimTickPitch =0;
-    public float aimMaxTick=1;
-    public int disable=0;
-    public Vector2f server_rotation = new Vector2f();
-    public Vector2f last_server_rotation = new Vector2f();
+public class KillAura extends VModule
+{
+    public KillAura() {
+        super("KillAura",Category.Combat);
+    }
+    public Vector2f targetRotation=new Vector2f();
+    public Vector2f currentRotation=new Vector2f();
+    public Setting rotationSpeed=new Setting("RotationSpeed",this,90,0,180,false);
+    public Setting rotationSpeed2=new Setting("RotationSpeed2",this,90,0,180,false);
 
-    private boolean hitting;
-    private boolean stopped;
-    private int endab;
-    public boolean block;
-    public int server_slot=0;
-    public EntityLivingBase target;
-    public KillAura(int key) {
-        super("杀戮光环", Category.Combat);
+    public Setting slientMove=new Setting("SlientMove",this,true);
+    public Setting keepSprint=new Setting("KeepSprint",this,false);
+    public Setting CPS = new Setting("CPS", this, 12, 0, 20, true);
+    public Setting rangeMin = new Setting("RangeMin", this, 3.0, 3.0, 6.0, false);
+    public Setting rangeMax = new Setting("RangeMax", this, 6.0, 3.0, 6.0, false);
+
+    @Override
+    public void onAttackReach(EventAttackReach event) {
+        super.onAttackReach(event);
+        event.reach= rangeMax.getValDouble()+(rangeMin.getValDouble()-rangeMax.getValDouble())*Math.random();
     }
 
     @Override
-    public void onRender2D(EventRender2D e) {
+    public void onUpdate(EventUpdate event) {
+        super.onUpdate(event);
+        if(FunGhostClient.registerManager.vModuleManager.scaffold.isRunning())return;
+        EntityWrapper target= FunGhostClient.registerManager.vModuleManager.target.target;
+        double speed=rotationSpeed.getValDouble()+(rotationSpeed2.getValDouble()-rotationSpeed.getValDouble())*Math.random();
+        if(target!=null){
 
-        if (target!=null&&!mc.gameSettings.showDebugInfo){
-            ScaledResolution sr = new ScaledResolution(mc);
-            Gui.drawRect(sr.getScaledWidth() / 2 + 55,
-                    sr.getScaledHeight() / 2 + 55,sr.getScaledWidth() / 2 + 55+100,
-                    sr.getScaledHeight() / 2 + 55+50,new Color(65,65,70,125).getRGB());
-            Gui.drawRect(sr.getScaledWidth() / 2 + 55,
-                    sr.getScaledHeight() / 2 + 55, (int) ((sr.getScaledWidth() / 2 + 55)+100*(target.getHealth()/target.getMaxHealth())),
-                    sr.getScaledHeight() / 2 + 55+50,new Color(255,0,0,200).getRGB());
-
-            FontManager.tenacity.drawString("目标名称:"+target.getName(),sr.getScaledWidth()/2+55,sr.getScaledHeight()/2+55,Color.WHITE.getRGB());
-            FontManager.tenacity.drawString("目标血量:"+target.getHealth()+"/"+target.getMaxHealth(),sr.getScaledWidth()/2+55,sr.getScaledHeight()/2+55+25,Color.yellow.getRGB());
-            FontManager.tenacity.drawString("blocking:"+(target instanceof EntityPlayer &&((EntityPlayer) target).isBlocking()),sr.getScaledWidth()/2+55,sr.getScaledHeight()/2+55+50,Color.yellow.getRGB());
-
-
+            targetRotation=AimBot.aim(mc.thePlayer.getPositionEyes(1),target.get().getPositionEyes(1));
         }
+        else {
+            targetRotation=new Vector2f(mc.thePlayer.rotationPitch,mc.thePlayer.rotationYaw);
+            speed=180;
+        }
+        currentRotation= RotationUtils.limitAngleChange(new Rotation(currentRotation),new Rotation(targetRotation), (float) speed).toVec2f();
+
+        FunGhostClient.rotationManager.setRation(currentRotation);
+        if(mc.objectMouseOver != null&&target!=null&&(mc.objectMouseOver).entityHit==target.get()&&Math.random() <CPS.getValDouble()/20){
+            mc.playerController.attackEntity(mc.thePlayer,mc.objectMouseOver.entityHit);
+            mc.thePlayer.swingItem();
+        }
+        if(!keepSprint.getValBoolean())mc.thePlayer.setSprinting(false);
     }
-
-
-
-
 
     @Override
-    public void onEnable() {
-        super.onEnable();
-        startYaw = mc.thePlayer.rotationYaw;
-        tempYaw = mc.thePlayer.rotationYaw;
-    }
-
-
-    public int getSlot() {
-        for (int i = 0; i <= 8; i++) {
-            if ((mc.thePlayer.inventory.mainInventory[i])==null){
-                continue;
-            }
-            if ((mc.thePlayer.inventory.mainInventory[i]).getItem() instanceof ItemSword) {
-                return i;
-            }
+    public void onStrafe(EventStrafe event) {
+        super.onStrafe(event);
+        if(FunGhostClient.registerManager.vModuleManager.scaffold.isRunning())return;
+        if(!slientMove.getValBoolean()){
+            event.yaw=FunGhostClient.rotationManager.getRation().y;
+            event.strafe=mc.thePlayer.movementInput.moveStrafe*0.98f;
+            event.forward=mc.thePlayer.movementInput.moveForward*0.98f;
         }
-        return mc.thePlayer.inventory.currentItem;
     }
-
-
-
 }

@@ -28,7 +28,7 @@ public class Main {
     }
     public static void start()
     {
-            Bootstrap.classLoader=Main.class.getClassLoader();
+            In9ectManager.classLoader=Main.class.getClassLoader();
             TCPServer.startServer(SERVERPORT);
             Method addURL = null;
 

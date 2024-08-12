@@ -22,8 +22,5 @@ public class Rotations extends VModule {
         }
     }
 
-    @Override
-    public void onMotion(EventMotion event) {
-        super.onMotion(event);
-    }
+
 }

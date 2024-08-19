@@ -3,7 +3,7 @@ package com.fun.inject.injection.asm.transformers;
 
 import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventRender2D;
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.Mappings;
@@ -17,7 +17,7 @@ public class GuiIngameTransformer extends Transformer {
 
 
     public GuiIngameTransformer() {
-        super(!(In9ectManager.minecraftType == MinecraftType.FORGE) ?"net/minecraft/client/gui/GuiIngame":"net/minecraftforge/client/GuiIngameForge");
+        super(!(Bootstrap.minecraftType == MinecraftType.FORGE) ?"net/minecraft/client/gui/GuiIngame":"net/minecraftforge/client/GuiIngameForge");
     }
 
 

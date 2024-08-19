@@ -1,6 +1,6 @@
 package com.fun.inject.utils;
 
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import org.objectweb.asm.ClassReader;
 
 public class FishClassWriter extends org.objectweb.asm.ClassWriter {
@@ -19,8 +19,8 @@ public class FishClassWriter extends org.objectweb.asm.ClassWriter {
         Class var3;
         Class var4;
         try {
-            var3 = In9ectManager.findClass(var1.replace('/', '.'));
-            var4 = In9ectManager.findClass(var2.replace('/', '.'));
+            var3 = Bootstrap.findClass(var1.replace('/', '.'));
+            var4 = Bootstrap.findClass(var2.replace('/', '.'));
         } catch (Exception var7) {
             throw new RuntimeException(var7.toString());
         }

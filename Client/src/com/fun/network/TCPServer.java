@@ -33,18 +33,18 @@ public class TCPServer {
         public void run() {
             super.run();
             try (ServerSocket serverSocket = new ServerSocket(portIn)) {
-                //System.out.println("服务器启动，监听端口：" + portIn);
+                System.out.println("Server Started Port:" + portIn);
 
                 while (true) {
                     // 等待客户端连接
                     Socket clientSocket = serverSocket.accept();
-                    //System.out.println("Connected to client: " + clientSocket.toString());
+                    System.out.println("Connected to client: " + clientSocket.toString());
                     ObjectInputStream ois = new ObjectInputStream(clientSocket.getInputStream());
                     ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
 
                     try {
                         Object receivedObject = ois.readObject();
-                        //System.out.println("Received object: " + receivedObject);
+                        System.out.println("ReceivedPacket: " + receivedObject);
 
                         if (receivedObject instanceof IPacket) {
                             receive((IPacket) receivedObject);

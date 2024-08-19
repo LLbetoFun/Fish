@@ -1,7 +1,6 @@
 package com.fun.inject.mapper;
 
 import com.fun.inject.Bootstrap;
-import com.fun.inject.In9ectManager;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftType;
 import com.fun.inject.utils.FishClassWriter;
@@ -121,7 +120,7 @@ public class Mapper {
                 for (AbstractInsnNode insnNode : methodNode.instructions) {
                     if (insnNode instanceof MethodInsnNode) {
                         if(isObfibleClass(((MethodInsnNode) insnNode).owner)) {
-                            Class<?> owner= In9ectManager.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
+                            Class<?> owner= Bootstrap.findClass(getObfClass(((MethodInsnNode) insnNode).owner));
 
                             ((MethodInsnNode) insnNode).name = getObfMethod(((MethodInsnNode) insnNode).name,
                                     owner, ((MethodInsnNode) insnNode).desc);
@@ -133,7 +132,7 @@ public class Mapper {
                     }
                     if (insnNode instanceof FieldInsnNode) {
                         if(isObfibleClass(((FieldInsnNode) insnNode).owner)) {
-                            Class<?> owner= In9ectManager.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
+                            Class<?> owner= Bootstrap.findClass(getObfClass(((FieldInsnNode) insnNode).owner));
                             ((FieldInsnNode) insnNode).name = getObfField(((FieldInsnNode) insnNode).name, owner);
                             ((FieldInsnNode) insnNode).owner = getObfClass(((FieldInsnNode) insnNode).owner);
                         }
@@ -260,21 +259,15 @@ public class Mapper {
     }
     public static List<Class<?>> getSupers(Class<?> theClass){
         List<Class<?>> classes = new ArrayList<>();
-        Class<?> superClz = theClass;
-        while (superClz != Object.class) {
-            if (superClz != null) {
-                classes.add(superClz);
-                superClz = superClz.getSuperclass();
-            } else break;
-        }
-        Class<?> interfaceClz = theClass;
-        while (interfaceClz != Object.class) {
-            if (interfaceClz != null) {
-                classes.addAll(Arrays.asList(interfaceClz.getInterfaces()));
-                interfaceClz = interfaceClz.getSuperclass();
-            } else break;
-        }
+        traverseSupers(theClass,classes);
         return classes;
+    }
+    private static void traverseSupers(Class<?> clz, List<Class<?>> result) {
+        if (clz == null || clz == Object.class || result.contains(clz)) return;
+        result.add(clz);
+        traverseSupers(clz.getSuperclass(), result);
+        for (Class<?> anInterface : clz.getInterfaces())
+            traverseSupers(anInterface, result);
     }
     public static String getObfField(String mcpName,Class<?> owner)
     {

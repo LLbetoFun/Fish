@@ -6,7 +6,7 @@ import com.fun.eventapi.EventTarget;
 import com.fun.eventapi.event.events.*;
 import com.fun.client.FunGhostClient;
 import com.fun.client.config.ConfigModule;
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.MinecraftVersion;
 
 import java.util.ArrayList;
@@ -96,8 +96,8 @@ public class RegisterManager {
             }
             if (m.running) m.onKey(event);
         }
-        if (event.key == 1&& In9ectManager.minecraftVersion!= MinecraftVersion.VER_1181) ConfigModule.saveConfig();
-        if (event.key==256&& In9ectManager.minecraftVersion== MinecraftVersion.VER_1181)ConfigModule.saveConfig();
+        if (event.key == 1&& Bootstrap.minecraftVersion!= MinecraftVersion.VER_1181) ConfigModule.saveConfig();
+        if (event.key==256&& Bootstrap.minecraftVersion== MinecraftVersion.VER_1181)ConfigModule.saveConfig();
     }
 
     @EventTarget

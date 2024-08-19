@@ -20,7 +20,7 @@ public class PacketInit implements IPacket{
     @Override
     public void process() {
         if(!Bootstrap.isAgent) {
-            File injection = Mapper.mapJar(new File(new File(Main.path), "/injections/" + In9ectManager.minecraftVersion.injection), MinecraftType.NONE);
+            File injection = Mapper.mapJar(new File(new File(Main.path), "/injections/" + Bootstrap.minecraftVersion.injection), MinecraftType.NONE);
             //System.out.println("injection: " + injection.getAbsolutePath());
             InjectorUtils.addToSystemClassLoaderSearch(injection.getAbsolutePath());
             FunGhostClient.registerManager = new RegisterManager();

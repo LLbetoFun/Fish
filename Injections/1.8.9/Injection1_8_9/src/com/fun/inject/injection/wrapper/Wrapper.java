@@ -1,7 +1,7 @@
 package com.fun.inject.injection.wrapper;
 
 
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import com.fun.utils.version.clazz.Classes;
 import com.fun.inject.Mappings;
 
@@ -19,7 +19,7 @@ public class Wrapper implements Serializable {
         obfName = Mappings.getObfClass(name);
         if (obfName != null) {
             try {
-                clazz = In9ectManager.findClass(obfName);
+                clazz = Bootstrap.findClass(obfName);
             } catch (Exception e) {
                 e.printStackTrace();
             }

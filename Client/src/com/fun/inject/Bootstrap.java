@@ -8,7 +8,6 @@ import com.fun.inject.define.Definer;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.inject.injection.asm.transformers.ClassLoaderTransformer;
-import com.fun.inject.magic.AntiClassScanner;
 import com.fun.inject.mapper.Mapper;
 import com.fun.inject.transform.GameClassTransformer;
 import com.fun.inject.utils.ReflectionUtils;
@@ -30,16 +29,34 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 
 public class Bootstrap {
 
-    public static final String VERSION="114514";
+    public static String VERSION;
     public static String jarPath;
-    public static boolean isAgent =false;
-    public static final int SERVERPORT=11451;
+    public static boolean isAgent;
+    public static int SERVERPORT = 11432;
+    public static Map<String, byte[]> classes;
+    public static Native instrumentation;
+    public static GameClassTransformer transformer;
+    public static MinecraftType minecraftType;
+    public static MinecraftVersion minecraftVersion;
+    public static String[] selfClasses;
+    public static ClassLoader classLoader;
+
+    static {
+        VERSION="1.4";
+        isAgent = false;
+        classes= new HashMap<>();
+        selfClasses=new String[]{"com.fun","org.newdawn","javax.vecmath","com.sun.jna","net/minecraft"};
+        minecraftType=MinecraftType.VANILLA;
+        minecraftVersion=MinecraftVersion.VER_189;
+    }
 
     private static byte[] readStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -57,7 +74,7 @@ public class Bootstrap {
             while ((entry = zis.getNextEntry()) != null)
                 if (!entry.isDirectory())
                     if (entry.getName().endsWith(".class"))
-                        In9ectManager.classes.put(entry.getName().replace("/", ".").substring(0, entry.getName().length() - 6), readStream(zis));
+                        classes.put(entry.getName().replace("/", ".").substring(0, entry.getName().length() - 6), readStream(zis));
         }
     }
 
@@ -187,13 +204,13 @@ public class Bootstrap {
         return false;
     }
     public static String[] getSelfClasses(){
-        return In9ectManager.selfClasses;
+        return selfClasses;
     }
     public static Class<?> hookFindClass(ClassLoader cl,String name) {
         for (String cname : getSelfClasses()) {
             if (name.replace('/', '.').startsWith(cname))
                 try {
-                    byte[] bytes = In9ectManager.classes.get(name);//InjectUtils.getClassBytes(cl, name);//IOUtils.readAllBytes(ClassLoader.getSystemResourceAsStream(name.replace('.', '/') + ".class"));
+                    byte[] bytes = classes.get(name);//InjectUtils.getClassBytes(cl, name);//IOUtils.readAllBytes(ClassLoader.getSystemResourceAsStream(name.replace('.', '/') + ".class"));
                     return (Class<?>) ReflectionUtils.invokeMethod(
                             cl,
                             "defineClass",
@@ -223,11 +240,11 @@ public class Bootstrap {
         TCPClient.send(Main.SERVERPORT,new PacketMCVer(null));
 
         try {
-            Class<?> c= In9ectManager.findClass("net.minecraft.client.Minecraft");//com/heypixel/heypixel/HeyPixel
+            Class<?> c= findClass("net.minecraft.client.Minecraft");//com/heypixel/heypixel/HeyPixel
             if(c!=null) {
-                In9ectManager.minecraftType = MinecraftType.MCP;
-                if (ReflectionUtils.getFieldValue(c, In9ectManager.minecraftVersion==MinecraftVersion.VER_1181?"f_90981_":"field_71432_P") != null)//m_91087_
-                    In9ectManager.minecraftType = MinecraftType.FORGE;
+                minecraftType = MinecraftType.MCP;
+                if (ReflectionUtils.getFieldValue(c, minecraftVersion==MinecraftVersion.VER_1181?"f_90981_":"field_71432_P") != null)//m_91087_
+                    minecraftType = MinecraftType.FORGE;
             }
 
         } catch (Exception e) {
@@ -241,11 +258,12 @@ public class Bootstrap {
         NativeUtils.loadJar(urlClassLoader, jar);
     }
     private static void defineClassesInCache(){
-        for(String s: In9ectManager.classes.keySet()){
+        for(String s: classes.keySet()){
             Definer.defineClass(s);
         }
     }
     public static void magic(){//启动注入线程
+
         new Thread(Bootstrap::in9ect).start();
     }
     public static native void in9ect();//初始化完毕后调用start
@@ -262,14 +280,14 @@ public class Bootstrap {
                 bufferedreader.close();
 
 
-                In9ectManager.instrumentation = new Native();
+                instrumentation = new Native();
                 boolean running = true;
                 while (running) {
                     for (Object o : Thread.getAllStackTraces().keySet().toArray()) {
                         Thread thread = (Thread) o;
                         if (thread.getName().equals("Client thread")||thread.getName().equals("Render thread")) {
 
-                            In9ectManager.classLoader=thread.getContextClassLoader();
+                            classLoader=thread.getContextClassLoader();
                             running = false;
                             break;
                         }
@@ -277,31 +295,31 @@ public class Bootstrap {
                 }
 
                 getVersion();
-                File injection=new File(new File(jarPath).getParent(),"/injections/"+ In9ectManager.minecraftVersion.injection);
-                injection=Mapper.mapJar(injection, In9ectManager.minecraftType);
+                File injection=new File(new File(jarPath).getParent(),"/injections/"+ minecraftVersion.injection);
+                injection=Mapper.mapJar(injection, minecraftType);
                 String hooks=new File(new File(Bootstrap.jarPath).getParent(),"hooks.jar").getAbsolutePath();
                 NativeUtils.addToBootstrapClassLoaderSearch(hooks);
                 NativeUtils.addToSystemClassLoaderSearch(injection.getAbsolutePath());
                 try {
-                    if (ClassLoader.getSystemClassLoader() != (In9ectManager.classLoader)) {
-                        if(In9ectManager.classLoader.getClass().getName().contains("launchwrapper")|| In9ectManager.classLoader.getClass().getSuperclass().getName().contains("ModuleClassLoader")){
+                    if (ClassLoader.getSystemClassLoader() != (classLoader)) {
+                        if(classLoader.getClass().getName().contains("launchwrapper")|| classLoader.getClass().getSuperclass().getName().contains("ModuleClassLoader")){
                             cacheJar(injection);
                             cacheJar(new File(jarPath));
                             defineClassesInCache();
 
                         }
                         else{
-                            loadJar((URLClassLoader) In9ectManager.classLoader, injection.toURI().toURL());
-                            loadJar((URLClassLoader) In9ectManager.classLoader, new File(jarPath).toURI().toURL());
+                            loadJar((URLClassLoader) classLoader, injection.toURI().toURL());
+                            loadJar((URLClassLoader) classLoader, new File(jarPath).toURI().toURL());
                         }
                     }
 
 
-                    Class<?> agentClass = In9ectManager.findClass("com.fun.inject.Bootstrap");
+                    Class<?> agentClass = findClass("com.fun.inject.Bootstrap");
 
                     for (Method m : agentClass.getDeclaredMethods()) {
                         if (m.getName().equals("init")) {
-                            m.invoke(null, In9ectManager.classLoader, jarPath);
+                            m.invoke(null, classLoader, jarPath);
                         }
                     }
                 } catch (Exception e) {
@@ -314,11 +332,10 @@ public class Bootstrap {
     }
 
     public static void transform() {
-        //AntiClassScanner.rideBMW();
-        AntiClassScanner.fuckBWM();
+
         Transformers.init();
-        In9ectManager.transformer = new GameClassTransformer();
-        In9ectManager.instrumentation.addTransformer(In9ectManager.transformer, true);
+        transformer = new GameClassTransformer();
+        instrumentation.addTransformer(transformer, true);
 
         //NativeUtils.messageBox("native cl:"+NativeUtils.class.getClassLoader(),"Fish");
 
@@ -336,7 +353,7 @@ public class Bootstrap {
         }
 
 
-        In9ectManager.instrumentation.doneTransform();
+        instrumentation.doneTransform();
 
         System.out.println("Transform classes successfully");
 
@@ -344,13 +361,13 @@ public class Bootstrap {
     }
 
     public static void init(ClassLoader cl, String jarPathIn) {
-        In9ectManager.classLoader=cl;
+        classLoader=cl;
         jarPath=jarPathIn;
         isAgent=true;
         getVersion();
-        File injection=new File(new File(jarPath).getParent(),"/injections/"+ In9ectManager.minecraftVersion.injection);
+        File injection=new File(new File(jarPath).getParent(),"/injections/"+ minecraftVersion.injection);
         try {
-            Mapper.readMappings(injection.getAbsolutePath(), In9ectManager.minecraftType);
+            Mapper.readMappings(injection.getAbsolutePath(), minecraftType);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -377,6 +394,12 @@ public class Bootstrap {
 
 
     }
+
+    public static Class<?> findClass(String name) throws ClassNotFoundException {
+      return classLoader.loadClass(name.replace('/','.'));
+    }
+
+
 
     ;
 

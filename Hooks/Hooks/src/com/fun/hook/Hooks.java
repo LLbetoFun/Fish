@@ -16,6 +16,8 @@ public class Hooks {
             for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
                 StackTraceElement st = stackTrace[i];
                 String className = st.getClassName();
+                //Printer.pw.println("hookGetClassName:"+className+"/"+st.getMethodName()+"("+st.getFileName()+" line:"+ st.getLineNumber()+")");
+
                 if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
                     return name;
                 }
@@ -32,6 +34,8 @@ public class Hooks {
             for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
                 StackTraceElement st = stackTrace[i];
                 String className = st.getClassName();
+                Printer.pw.println("hookGetProtectionDomain:"+className+"/"+st.getMethodName()+"("+st.getFileName()+")");
+
                 if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
                     return pd;
                 }
@@ -65,6 +69,8 @@ public class Hooks {
             for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
                 StackTraceElement st = stackTrace[i];
                 String className = st.getClassName();
+                Printer.pw.println("at:"+className+"/"+st.getMethodName()+"("+st.getFileName()+")");
+
                 if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
                     return methodName;
                 }
@@ -82,6 +88,8 @@ public class Hooks {
             for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
                 StackTraceElement st = stackTrace[i];
                 String className = st.getClassName();
+                Printer.pw.println("at:"+className+"/"+st.getMethodName()+"("+st.getFileName()+")");
+
                 if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
                     return fieldName;
                 }
@@ -99,6 +107,7 @@ public class Hooks {
             for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
                 StackTraceElement st = stackTrace[i];
                 String className = st.getClassName();
+                Printer.pw.println("at:"+className+"/"+st.getMethodName()+"("+st.getFileName()+")");
                 if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
                     return value;
                 }
@@ -108,5 +117,26 @@ public class Hooks {
         }
         return value;
     }
+    public static Class<?> hookGetObjectClass(Class<?> c,Object object){
+
+        String name=c.getName();
+        if(name.contains("com.fun")) {
+            StackTraceElement[] stackTrace=new RuntimeException().getStackTrace();
+            for (int i = 0, stackTraceLength = stackTrace.length; i < stackTraceLength; i++) {
+                StackTraceElement st = stackTrace[i];
+                String className = st.getClassName();
+                Printer.pw.println("hookGetObjectClass:"+className+"/"+st.getMethodName()+"("+st.getFileName()+" line:"+ st.getLineNumber()+")");
+
+                if (className.contains("com.fun")&&!className.contains("com.fun.hook.Hooks")) {
+                    return c;
+                }
+            }
+            Printer.pw.println("for BWM i'm sorry:"+name);
+            throw new NullPointerException("操你妈的妖猫是我老婆");
+        }
+        Printer.pw.println("hookGetObjectClass:"+c.getName());
+        return c;
+    }
+
 
 }

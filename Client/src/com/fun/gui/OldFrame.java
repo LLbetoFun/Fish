@@ -6,7 +6,7 @@ import com.fun.client.config.ConfigModule;
 import com.fun.client.mods.Category;
 import com.fun.client.mods.Module;
 import com.fun.client.settings.Setting;
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.Main;
 import com.fun.inject.InjectUtils;
 
@@ -30,7 +30,7 @@ public class OldFrame extends JFrame {
     }
     public static void init(){
         try {
-            In9ectManager.findClass("com.fun.gui.FishFrame").getDeclaredMethod("init0").invoke(null);
+            Bootstrap.findClass("com.fun.gui.FishFrame").getDeclaredMethod("init0").invoke(null);
 
         } catch (Exception e) {
             init0();

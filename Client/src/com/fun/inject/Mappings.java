@@ -44,7 +44,7 @@ public class Mappings {
     static {
         if(Bootstrap.isAgent){
             try {
-                readMappings(In9ectManager.minecraftVersion, In9ectManager.minecraftType);
+                readMappings(Bootstrap.minecraftVersion, Bootstrap.minecraftType);
             } catch (IOException e) {
                 e.printStackTrace();
             }

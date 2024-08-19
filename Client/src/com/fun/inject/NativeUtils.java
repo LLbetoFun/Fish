@@ -1,7 +1,9 @@
 package com.fun.inject;
 
 import com.fun.inject.transform.IClassTransformer;
+import sun.misc.Unsafe;
 
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.ProtectionDomain;
@@ -11,9 +13,9 @@ import java.util.ArrayList;
 public class NativeUtils {
     public static ArrayList<IClassTransformer> transformers=new ArrayList<>();
     public static ArrayList<ClassDefiner> classDefiners=new ArrayList<>();
-    public static final int JVMTI_CLASSFILEHOOK=54;
-    public static final int JVMTI_ENABLE=1;
-    public static final int JVMTI_DISABLE=0;
+    public static int JCLASSFILEHOOK=54;
+    public static int JENABLE=1;
+    public static int JDISABLE=0;
 
 
     public static byte[] transform(  ClassLoader         loader,
@@ -22,21 +24,21 @@ public class NativeUtils {
                                             ProtectionDomain protectionDomain,
                                      byte[]              classfileBuffer){
         try {
-            NativeUtils.setEventNotificationMode(JVMTI_DISABLE,JVMTI_CLASSFILEHOOK);
+            NativeUtils.setEventNotificationMode(JDISABLE,JCLASSFILEHOOK);
             for (IClassTransformer t : transformers) {
                 byte[] b = t.transform(loader, className, classBeingRedefined, protectionDomain, classfileBuffer);
                 if (b != null) {
                     classDefiners.add(new ClassDefiner(classBeingRedefined,b));
-                    NativeUtils.setEventNotificationMode(JVMTI_ENABLE,JVMTI_CLASSFILEHOOK);
+                    NativeUtils.setEventNotificationMode(JENABLE,JCLASSFILEHOOK);
                     return classfileBuffer;
                 }
             }
-            NativeUtils.setEventNotificationMode(JVMTI_ENABLE,JVMTI_CLASSFILEHOOK);
+            NativeUtils.setEventNotificationMode(JENABLE,JCLASSFILEHOOK);
             return classfileBuffer;
         }
         catch (Exception e){
             e.printStackTrace();
-            NativeUtils.setEventNotificationMode(JVMTI_ENABLE,JVMTI_CLASSFILEHOOK);
+            NativeUtils.setEventNotificationMode(JENABLE,JCLASSFILEHOOK);
             return classfileBuffer;
         }
     }
@@ -75,6 +77,16 @@ public class NativeUtils {
 
     public static native Class<?> defineClass(ClassLoader cl,byte[] bytes);
     public static native boolean isModifiableClass(Class<?> clazz);
+    public static Unsafe getUnsafe() throws NoSuchFieldException, IllegalAccessException {
+        Field theUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+
+        // 步骤2: 设置 Field 的访问权限
+        theUnsafeField.setAccessible(true);
+
+        // 步骤3: 获取 Unsafe 实例
+        return (Unsafe) theUnsafeField.get(null);
+    }
+
 
 
 

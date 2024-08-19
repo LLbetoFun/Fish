@@ -1,7 +1,6 @@
 package com.fun.inject.injection.wrapper.impl;
 
 
-import com.fun.inject.In9ectManager;
 import com.fun.inject.injection.wrapper.impl.entity.EntityPlayerSPWrapper;
 import com.fun.inject.injection.wrapper.impl.network.NetHandlerPlayClientWrapper;
 import com.fun.inject.injection.wrapper.impl.other.TimerWrapper;
@@ -208,7 +207,7 @@ public class MinecraftWrapper extends Wrapper {
     }
     public static Minecraft getInstance() {
         try {
-            return (Minecraft) ReflectionUtils.getFieldValue(In9ectManager.findClass(Mappings.getObfClass("net/minecraft/client/Minecraft")),Mappings.getObfField("f_90981_"));
+            return (Minecraft) ReflectionUtils.getFieldValue(Bootstrap.findClass(Mappings.getObfClass("net/minecraft/client/Minecraft")),Mappings.getObfField("f_90981_"));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

@@ -1,7 +1,6 @@
 package com.fun.inject.injection.wrapper.impl;
 
 
-import com.fun.inject.In9ectManager;
 import com.fun.inject.injection.wrapper.impl.entity.EntityPlayerSPWrapper;
 import com.fun.inject.injection.wrapper.impl.network.NetHandlerPlayClientWrapper;
 import com.fun.inject.injection.wrapper.impl.other.TimerWrapper;
@@ -224,7 +223,7 @@ public class MinecraftWrapper extends Wrapper {
     //MD: le/a (Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture; net/minecraft/world/WorldServer/func_152344_a (Ljava/lang/Runnable;)Lcom/google/common/util/concurrent/ListenableFuture;
     public void addScheduledTask(Runnable runnable) {
         try {
-            ReflectionUtils.invokeMethod(minecraftObj,Mappings.getObfMethod("func_152344_a"),new Class[]{In9ectManager.findClass("java/lang/Runnable")},runnable);
+            ReflectionUtils.invokeMethod(minecraftObj,Mappings.getObfMethod("func_152344_a"),new Class[]{Bootstrap.findClass("java/lang/Runnable")},runnable);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

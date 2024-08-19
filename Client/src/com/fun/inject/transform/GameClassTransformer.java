@@ -1,6 +1,6 @@
 package com.fun.inject.transform;
 
-import com.fun.inject.In9ectManager;
+import com.fun.inject.Bootstrap;
 import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Mixin;
 import com.fun.inject.injection.asm.api.Transformer;
@@ -33,7 +33,7 @@ public class GameClassTransformer implements IClassTransformer {
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) {
 
         for (Transformer transformer : Transformers.transformers) {
-            if (transformer.clazz == classBeingRedefined && loader == In9ectManager.classLoader) {
+            if (transformer.clazz == classBeingRedefined && loader == Bootstrap.classLoader) {
                 transformer.oldBytes = classfileBuffer;
 
                 try {

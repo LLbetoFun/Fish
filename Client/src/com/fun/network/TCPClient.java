@@ -5,7 +5,7 @@ import java.net.Socket;
 public class TCPClient {
     public static void send(int port,IPacket info){
         String host = "localhost"; // 服务器地址
-        //System.out.println("send"+info);
+        System.out.println("SentPacket:"+info);
         try (Socket socket = new Socket(host, port)) {
             //System.out.println(info);
             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());

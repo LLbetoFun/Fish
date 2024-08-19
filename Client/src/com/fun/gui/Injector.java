@@ -3,6 +3,8 @@ package com.fun.gui;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.fun.inject.Bootstrap;
 import com.fun.inject.Main;
+import sun.tools.attach.HotSpotVirtualMachine;
+import sun.tools.jmap.JMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +23,6 @@ public class Injector extends JFrame {
         init();
         this.setSize(500,500);
         this.setVisible(true);
-
 
     }
     private void init(){

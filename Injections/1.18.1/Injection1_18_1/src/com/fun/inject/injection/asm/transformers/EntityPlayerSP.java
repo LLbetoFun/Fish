@@ -14,6 +14,7 @@ import com.fun.utils.version.runable.VRunable;
 import com.fun.inject.Mappings;
 import com.fun.inject.MinecraftVersion;
 
+import it.unimi.dsi.fastutil.objects.ObjectHeaps;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

@@ -264,9 +264,9 @@ public class Bootstrap {
     }
     public static void magic(){//启动注入线程
 
-        new Thread(Bootstrap::in9ect).start();
+        new Thread(Bootstrap::inject).start();
     }
-    public static native void in9ect();//初始化完毕后调用start
+    public static native void inject();//初始化完毕后调用start
     public static void start() throws URISyntaxException, IOException, InterruptedException
     {//启动方法
                 isAgent =true;

@@ -1,10 +1,9 @@
 package com.fun.gui;
 
+import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-import com.fun.inject.Bootstrap;
+import com.fun.inject.Agent;
 import com.fun.inject.Main;
-import sun.tools.attach.HotSpotVirtualMachine;
-import sun.tools.jmap.JMap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,10 +23,11 @@ public class Injector extends JFrame {
         this.setSize(500,500);
         this.setVisible(true);
 
+
     }
     private void init(){
-        setTitle("Fish"+ Bootstrap.VERSION);
-        setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico.png")).getImage());
+        setTitle("Fish"+ Agent.VERSION);
+        setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico2.png")).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(new GridLayout());
         this.setBackground(Color.WHITE);

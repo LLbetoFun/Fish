@@ -69,7 +69,7 @@ public class OldFrame extends JFrame {
         settings=new DefaultMutableTreeNode("Settings");
         settingsTree=new JTree(settings);
         setTitle(generateRandomString(16));//"Fish"+Agent.VERSION
-        setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico.png")).getImage());
+        setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico2.png")).getImage());
         System.out.println("Frame Init");
         Container container=getContentPane();
         for(Category c:Category.values()){

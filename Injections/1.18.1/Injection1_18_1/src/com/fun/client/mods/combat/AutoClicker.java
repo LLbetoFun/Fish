@@ -3,7 +3,6 @@ package com.fun.client.mods.combat;
 import com.fun.client.mods.Category;
 import com.fun.client.mods.VModule;
 import com.fun.client.settings.Setting;
-import com.fun.eventapi.event.events.EventTick;
 import com.fun.eventapi.event.events.EventUpdate;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -15,33 +14,34 @@ public class AutoClicker extends VModule {
     public AutoClicker() {
         super("AutoClicker", Category.Combat);
     }
-    public Setting LeftCPS = new Setting("LeftCPS", this, 12, 0, 20, true);
-    public Setting RightCPS = new Setting("RightCPS", this, 12, 0, 20, true);
-    public Setting left = new Setting("LeftClick", this, true);
-    public Setting right = new Setting("RightClick", this, true);
+
+    public Setting leftCPS = new Setting("LeftCPS", this, 12, 0, 20, true);
+    public Setting rightCPS = new Setting("RightCPS", this, 12, 0, 20, true);
+    public Setting leftEnabled = new Setting("LeftClick", this, true);
+    public Setting rightEnabled = new Setting("RightClick", this, true);
 
     @Override
     public void onUpdate(EventUpdate event) {
         super.onUpdate(event);
-        if(left.getValBoolean()&&mc.mouseHandler.isLeftPressed()){
-            if(Math.random() <LeftCPS.getValDouble()/20&&mc.screen==null&&mc.level!=null){
-                sendClick(Type.LEFT);
-            }
-        }
-        if(right.getValBoolean()&&mc.mouseHandler.isRightPressed()){
-            if(Math.random() <RightCPS.getValDouble()/20&&mc.screen==null&&mc.level!=null){
-                sendClick(Type.RIGHT);
+        handleClick(leftEnabled, leftCPS, InputConstants.MOUSE_BUTTON_LEFT);
+        handleClick(rightEnabled, rightCPS, InputConstants.MOUSE_BUTTON_RIGHT);
+    }
+
+    private void handleClick(Setting enabled, Setting cps, int button) {
+        if (enabled.getValBoolean() && isButtonPressed(button)) {
+            if (Math.random() < cps.getValDouble() / 20 && mc.screen == null && mc.level != null) {
+                sendClick(button);
             }
         }
     }
 
-    public static enum Type{
-        LEFT,RIGHT
+    private boolean isButtonPressed(int button) {
+        return (button == MOUSE_BUTTON_LEFT && mc.mouseHandler.isLeftPressed()) ||
+                (button == MOUSE_BUTTON_RIGHT && mc.mouseHandler.isRightPressed());
     }
-    public void sendClick(Type t){
-        KeyMapping.click(InputConstants.Type.MOUSE.getOrCreate(t==Type.LEFT?MOUSE_BUTTON_LEFT:MOUSE_BUTTON_RIGHT));
-    }
-    public InputConstants.Key getKey(Type t){
-       return  (InputConstants.Type.MOUSE.getOrCreate(t==Type.LEFT?MOUSE_BUTTON_LEFT:MOUSE_BUTTON_RIGHT));
+
+    public void sendClick(int button) {
+        KeyMapping.click(InputConstants.Type.MOUSE.getOrCreate(button));
     }
 }
+

@@ -10,15 +10,10 @@ import com.fun.utils.version.clazz.Classes;
 import java.util.Random;
 
 import static com.fun.client.FunGhostClient.registerManager;
-import com.fun.client.mods.Category;
 import com.fun.client.mods.Module;
+
 public class Velocity extends Module {
     private final Random random = new Random();
-
-    public Velocity() {
-        super("Velocity", Category.Combat);
-    }
-
     public EntityWrapper target = null;
 
     public Setting mode = new Setting("Mode", this, "Vanilla", new String[]{"Vanilla", "JumpReset"});
@@ -46,11 +41,23 @@ public class Velocity extends Module {
             return mode.getValString().equalsIgnoreCase("Vanilla");
         }
     };
+
     public Setting chance = new Setting("Chance", this, 100.0, 0.0, 100.0, true);
     public Setting waterCheck = new Setting("WaterCheck", this, true);
+    public Setting fov = new Setting("FOV", this, 90.0, 0.0, 180.0, false);
 
     private double getRandomMultiplier(double min, double max) {
         return min + (max - min) * random.nextDouble();
+    }
+
+    private boolean isTargetInFOV(EntityWrapper target) {
+        double dx = target.getX() - mc.getPlayer().getX();
+        double dz = target.getZ() - mc.getPlayer().getZ();
+        double angle = Math.atan2(dz, dx) * (180 / Math.PI);
+        double playerYaw = mc.getPlayer().getYaw();
+
+        double angleDifference = Math.abs(playerYaw - angle);
+        return angleDifference <= fov.getValDouble() / 2;
     }
 
     @Override
@@ -60,22 +67,19 @@ public class Velocity extends Module {
             try {
                 S12PacketEntityVelocityWrapper packetVelocity = new S12PacketEntityVelocityWrapper(packet.packet);
                 if (packetVelocity.getEntityID() == mc.getPlayer().getEntityID()) {
-                    // 更新 target
                     target = registerManager.vModuleManager.target.target;
-                    if (target == null) {
-                        return; // 如果没有目标，退出
-                    }
-
-                    if (this.mode.getValString().equalsIgnoreCase("Vanilla")) {
-                        if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {
-                            return;
-                        }
-                        if (random.nextDouble() * 100 < chance.getValDouble()) {
-                            double horizontalMultiplier = getRandomMultiplier(horizontalMin.getValDouble(), horizontalMax.getValDouble()) / 100.0;
-                            double verticalMultiplier = getRandomMultiplier(verticalMin.getValDouble(), verticalMax.getValDouble()) / 100.0;
-                            packetVelocity.setMotionX((int) (packetVelocity.getMotionX() * horizontalMultiplier));
-                            packetVelocity.setMotionY((int) (packetVelocity.getMotionY() * verticalMultiplier));
-                            packetVelocity.setMotionZ((int) (packetVelocity.getMotionZ() * horizontalMultiplier));
+                    if (target != null && isTargetInFOV(target)) { //FOV
+                        if (this.mode.getValString().equalsIgnoreCase("Vanilla")) {
+                            if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {
+                                return;
+                            }
+                            if (random.nextDouble() * 100 < chance.getValDouble()) {
+                                double horizontalMultiplier = getRandomMultiplier(horizontalMin.getValDouble(), horizontalMax.getValDouble()) / 100.0;
+                                double verticalMultiplier = getRandomMultiplier(verticalMin.getValDouble(), verticalMax.getValDouble()) / 100.0;
+                                packetVelocity.setMotionX((int) (packetVelocity.getMotionX() * horizontalMultiplier));
+                                packetVelocity.setMotionY((int) (packetVelocity.getMotionY() * verticalMultiplier));
+                                packetVelocity.setMotionZ((int) (packetVelocity.getMotionZ() * horizontalMultiplier));
+                            }
                         }
                     }
                 }
@@ -88,21 +92,19 @@ public class Velocity extends Module {
     @Override
     public void onMoment(EventMoment event) {
         super.onMoment(event);
-        // 更新 target
         target = registerManager.vModuleManager.target.target;
-        if (target == null) {
-            return; // 如果没有目标，退出
-        }
-
-        if (mode.getValString().equalsIgnoreCase("JumpReset")) {
-            if (mc.getPlayer().getHurtTime() == 9 && mc.getPlayer().isOnGround()) {
-                if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {
-                    return;
-                }
-                if (random.nextDouble() * 100 < chance.getValDouble()) {
-                    mc.getPlayer().getMovementInputObj().setJump(true);
+        if (target != null && isTargetInFOV(target)) { //FOV
+            if (mode.getValString().equalsIgnoreCase("JumpReset")) {
+                if (mc.getPlayer().getHurtTime() == 9 && mc.getPlayer().isOnGround()) {
+                    if (waterCheck.getValBoolean() && mc.getPlayer().isInWater()) {
+                        return;
+                    }
+                    if (random.nextDouble() * 100 < chance.getValDouble()) {
+                        mc.getPlayer().getMovementInputObj().setJump(true);
+                    }
                 }
             }
         }
     }
 }
+

@@ -609,7 +609,7 @@ extern void JNICALL Load(JAVA* java){
     jclass agent = findClass(java->jniEnv, "com.fun.inject.Bootstrap");//com.fun.inject.Bootstrap
 
     JNINativeMethod methods[] = {
-            {"in9ect","()V",(void*) Java_Inject}
+            {"inject","()V",(void*) Java_Inject}
     };
     if(agent)(*java->jniEnv)->RegisterNatives(java->jniEnv,agent, methods, 1);
     jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"magic","()V");

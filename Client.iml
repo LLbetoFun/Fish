@@ -67,5 +67,6 @@
     </orderEntry>
     <orderEntry type="library" name="ow2.asm.commons" level="project" />
     <orderEntry type="module" module-name="Hooks" exported="" />
+    <orderEntry type="library" name="asm-commons-9.7" level="project" />
   </component>
 </module>

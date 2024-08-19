@@ -82,8 +82,8 @@ public class AimAssist extends Module {
 
         if (shouldSkipRender()) return;
 
-        Vector2f newRotations = new Vector2f(MathHelper.wrapAngleTo180_float(this.lastRotations.getYaw() +
-                (this.rotations.getYaw() - this.lastRotations.getYaw()) * mc.getTimer().getRenderPartialTicks()), 0);
+        Vector2f newRotations = new Vector2f(MathHelper.wrapAngleTo180_float((float) (this.lastRotations.getYaw() +
+                        (this.rotations.getYaw() - this.lastRotations.getYaw()) * mc.getTimer().getRenderPartialTicks())), 0);
         adjustPlayerAngles(playersp, newRotations);
     }
 

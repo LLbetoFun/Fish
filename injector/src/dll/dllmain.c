@@ -70,7 +70,8 @@ void UnHookFunctionAdress64(LPVOID FuncAddress)
     }
     VirtualProtect((LPVOID)FuncAddress, 12, OldProtect, &OldProtect);
 }
-
+extern void JNICALL unHookGetClass(JNIEnv *env);
+extern void JNICALL hookGetClass(JNIEnv *env);
 /*int WINAPI MyMessageBoxW(HWND hWnd, LPCTSTR lpText, LPCTSTR lpCaption, UINT uType)
 {
     UnHookFunction64(L"user32.dll", "MessageBoxW");
@@ -150,6 +151,9 @@ extern JNIEXPORT jclass JNICALL findClass(JNIEnv *jniEnv, const char *name) {
     classloader = (*jniEnv)->CallStaticObjectMethod(jniEnv, ClassLoader, getSystemClassLoader);
     return findClass0(jniEnv,name,classloader);
 }
+
+extern bool isHookedGetClass=false;
+extern bool isLockingGetClass=false;
 
 
 
@@ -373,6 +377,7 @@ extern JNIEXPORT void JNICALL destroy
 
     JAVA java= GetJAVA(env);
     UnHookFunctionAdress64((*java.jvmtiEnv)->SetEventNotificationMode);
+    //unHookGetClass(env);
     //UnHookFunctionAdress64((*java.jvmtiEnv)->GetLoadedClasses);
 
 }
@@ -423,17 +428,23 @@ extern JNIEXPORT void JNICALL addToBootstrapClassLoaderSearch(JNIEnv *jniEnv, jc
 }
 JNIEXPORT jclass JNICALL DefineClass(JNIEnv *env, jclass _, jobject classLoader, jbyteArray bytes)
 {
-    jclass clClass = (*env)->FindClass(env, "java/lang/ClassLoader");
-    jmethodID defineClass = (*env)->GetMethodID(env, clClass, "defineClass", "([BII)Ljava/lang/Class;");
-    jobject classDefined = (*env)->CallObjectMethod(env, classLoader, defineClass, bytes, 0,
-                                                    (*env)->GetArrayLength(env, bytes));
-    return (jclass)classDefined;
+    jbyte* b=(*env)->GetByteArrayElements(env,bytes,NULL);
+    jclass c=(*env)->DefineClass(env,NULL,classLoader,b,(*env)->GetArrayLength(env, bytes));
+    (*env)->ReleaseByteArrayElements(env,bytes, b, 0);
+
+
+    return c;
 }
 extern jboolean JNICALL isModifiableClass(JNIEnv *env, jclass _,jclass klass){
     jboolean r;
     (*Java->jvmtiEnv)->IsModifiableClass(Java->jvmtiEnv,klass,&r);
     return r;
 }
+__int64 __fastcall Hook_JVM_EnqueueOperation(int a1, int a2, int a3, int a4, __int64 a5)
+{
+    return -1;
+}
+
 extern JAVA JNICALL GetJAVA(JNIEnv *env){
     JAVA java;
     java.jniEnv=env;
@@ -454,8 +465,37 @@ extern JAVA JNICALL GetJAVA(JNIEnv *env){
     return java;
 
 }
+extern JNICALL jclass HookGetObjectClass
+(JNIEnv *env, jobject obj){
+    jclass result;
+    while(isLockingGetClass);
+    isLockingGetClass=true;
+    unHookGetClass(env);
+    result = (*env)->GetObjectClass(env, obj);
 
+    isLockingGetClass=false;
+    jclass hook = (*env)->FindClass(env, "com/fun/hook/Hooks");
+    jmethodID hookGetObjectClass = (*env)->GetStaticMethodID(env, hook, "hookGetObjectClass",
+                                                             "(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Class;");
+    //MessageBoxA(NULL,"HookGetObjectClass","",0);
 
+    result = (*env)->CallStaticObjectMethod(env, hook, hookGetObjectClass, result, obj);
+    hookGetClass(env);
+    return result;
+}
+
+extern void JNICALL hookGetClass(JNIEnv *env){
+    if(!isHookedGetClass){
+        HookFunctionAdress64((*env)->GetObjectClass, HookGetObjectClass);
+        isHookedGetClass=true;
+    }
+}
+extern void JNICALL unHookGetClass(JNIEnv *env){
+    if(isHookedGetClass){
+        UnHookFunctionAdress64((*env)->GetObjectClass);
+        isHookedGetClass=false;
+    }
+}
 extern DWORD JNICALL Inject(JAVA java){
     //MessageBoxA(NULL,"Inject","Fish",0);
     Java = &java;
@@ -520,14 +560,13 @@ extern DWORD JNICALL Inject(JAVA java){
     jmethodID start = (*Java->jniEnv)->GetStaticMethodID(Java->jniEnv,agent, "start", "()V");//todo
     //MessageBoxA(NULL, "Click \"OK\" to Inject", "FunGhostClient", 0);
     (*Java->jniEnv)->CallStaticVoidMethod(Java->jniEnv,agent, start);
-    //
+    //-----以下代码用于打死特征
+    //hookGetClass(&(*java.jniEnv));
+    HookFunction64("jvm.dll","JVM_EnqueueOperation",(PROC) Hook_JVM_EnqueueOperation);
 
-    //if(!hook)
     return 0;
-    //FreeLibrary(libAgent);
 
 }
-
 
 extern void JNICALL Java_Inject(JNIEnv* env,jclass _){
     Inject(GetJAVA(env));
@@ -577,12 +616,8 @@ extern void JNICALL Load(JAVA* java){
 
     (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
 
-//  if(0) {
-//      jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
-//      jmethodID sm = (*java->jniEnv)->GetStaticMethodID(java->jniEnv, sk, "sm", "()V");
-//      (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv, sk, sm);
-//      return;
-//  }
+
+
 }//InjectManager
 
 extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
@@ -659,7 +694,6 @@ extern JNIEXPORT jlong JNICALL nGetTime_Hook(JNIEnv* env, jclass clazz) {
 }
 
 
-
 typedef jstring(*JVM_GetSystemPackage)(JNIEnv *env, jstring name);
 PVOID WINAPI hook() {
     //MessageBoxA(NULL,"Start HOOK","Fish",0);
@@ -670,7 +704,9 @@ PVOID WINAPI hook() {
 
     HookFunction64("jvm.dll","JVM_NanoTime",(PROC) Hook_NanoTime);
 
-    //MessageBoxA(NULL,"Finish HOOK","Fish",0);
+
+    //JVM_EnqueueOperation
+    //
 
     return NULL;
 }

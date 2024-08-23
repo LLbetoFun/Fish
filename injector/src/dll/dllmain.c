@@ -442,7 +442,8 @@ extern jboolean JNICALL isModifiableClass(JNIEnv *env, jclass _,jclass klass){
 }
 __int64 __fastcall Hook_JVM_EnqueueOperation(int a1, int a2, int a3, int a4, __int64 a5)
 {
-    return -1;
+    //MessageBoxA(NULL,"傻逼妖猫又在jmap","Fish",0);
+    return 0;
 }
 
 extern JAVA JNICALL GetJAVA(JNIEnv *env){
@@ -596,7 +597,7 @@ extern void JNICALL Load(JAVA* java){
     (*java->jvmtiEnv)->SetEventNotificationMode(java->jvmtiEnv,JVMTI_DISABLE,JVMTI_EVENT_CLASS_FILE_LOAD_HOOK,NULL);
     HookFunctionAdress64((*java->jvmtiEnv)->SetEventNotificationMode, HookSetEventNotificationMode);
     //HookFunctionAdress64((*java->jvmtiEnv)->GetLoadedClasses, HookGetLoadedClasses);
-
+    
     (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,buffer);
     //return;
     //printEx(java);
@@ -623,14 +624,7 @@ extern void JNICALL Load(JAVA* java){
 extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
         JAVA java;
         java.jniEnv=env;
-        HMODULE hJvm = GetModuleHandle("jvm.dll");
-        typedef jint(JNICALL *fnJNI_GetCreatedJavaVMs)(JavaVM **, jsize, jsize *);
-        fnJNI_GetCreatedJavaVMs JNI_GetCreatedJavaVMs;
-        JNI_GetCreatedJavaVMs = (fnJNI_GetCreatedJavaVMs) GetProcAddress(hJvm,
-                                                                            "JNI_GetCreatedJavaVMs");
-
-        jint num = JNI_GetCreatedJavaVMs(&java.vm, 1, NULL);
-
+        jint num=(*java.jniEnv)->GetJavaVM(java.jniEnv,&java.vm);
         jint num1=(*java.vm)->GetEnv(java.vm, (void **) (&java.jvmtiEnv),JVMTI_VERSION);
         char *errc = (char *) allocate(4);
 
@@ -714,6 +708,6 @@ PVOID WINAPI hook() {
 
 
 void APIENTRY entry() {
-    CreateThread(NULL, 4096, (LPTHREAD_START_ROUTINE) (&hook), NULL, 0, NULL);
-
+    HANDLE Thread= CreateThread(NULL, 4096, (LPTHREAD_START_ROUTINE) (&hook), NULL, 0, NULL);
+    CloseHandle(Thread);
 }

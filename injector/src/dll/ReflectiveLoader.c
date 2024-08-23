@@ -473,6 +473,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD dwReason, LPVOID lpReserved) {
         case DLL_PROCESS_ATTACH:
 
             hAppInstance = hinstDLL;
+            DisableThreadLibraryCalls(hinstDLL);
             entry();
             break;
         case DLL_PROCESS_DETACH:

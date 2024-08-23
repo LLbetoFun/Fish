@@ -22,14 +22,23 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="35ea5eb3-44a7-45cc-b4aa-d201e785f06d" name="Changes" comment="通过hook JVM_EnqueueOperation打死了jmap从而绕过妖猫私人特征">
+    <list default="true" id="35ea5eb3-44a7-45cc-b4aa-d201e785f06d" name="Changes" comment="神秘修复">
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/client/config/ConfigModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/client/config/ConfigModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Launcher/Launcher/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Launcher/Launcher/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/FunGhostClient.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/FunGhostClient.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/injection_forge.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injection_forge.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/injection_none.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injection_none.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../fish/injection_vanilla.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injection_vanilla.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/injections/1.12.2.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injections/1.12.2.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/injections/1.18.1.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injections/1.18.1.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/injections/1.8.9.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injections/1.8.9.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/libagent.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/libagent.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/dllmain.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/dllmain.c.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/dll/ReflectiveLoader.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/dll/ReflectiveLoader.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dll/dllmain.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/dll/dllmain.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -272,7 +281,10 @@
       <workItem from="1724030471079" duration="46000" />
       <workItem from="1724067995408" duration="1213000" />
       <workItem from="1724070358144" duration="664000" />
-      <workItem from="1724072653599" duration="368000" />
+      <workItem from="1724072653599" duration="466000" />
+      <workItem from="1724127573763" duration="90000" />
+      <workItem from="1724128920078" duration="272000" />
+      <workItem from="1724373633797" duration="2719000" />
     </task>
     <task id="LOCAL-00001" summary="fix inject thread">
       <option name="closed" value="true" />
@@ -290,7 +302,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724070419244</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="神秘修复">
+      <option name="closed" value="true" />
+      <created>1724073119611</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1724073119611</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -305,7 +325,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="fix inject thread" />
     <MESSAGE value="通过hook JVM_EnqueueOperation打死了jmap从而绕过妖猫私人特征" />
-    <option name="LAST_COMMIT_MESSAGE" value="通过hook JVM_EnqueueOperation打死了jmap从而绕过妖猫私人特征" />
+    <MESSAGE value="神秘修复" />
+    <option name="LAST_COMMIT_MESSAGE" value="神秘修复" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

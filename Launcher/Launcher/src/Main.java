@@ -39,11 +39,6 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        new Thread(()->{
-
-            //traverseFolder2(destDir.getAbsolutePath());
-
-        }).start();
 
     }
     public static void traverseFolder2(String path) {

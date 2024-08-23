@@ -21,7 +21,6 @@ public class ConfigModule {
         ArrayList<Setting> settingsByMod =  FunGhostClient.settingsManager.getSettingsByMod(mod);
         writer.println(mod.getName()+"-"+"running"+":"+mod.running);
         writer.println(mod.getName()+"-"+"key"+":"+mod.key);
-
         for (Setting set : settingsByMod) {
                 //Minecraft.getLogger().info(set.getName() + ":" + (set.isSlider() ? set.getValDouble() : set.isCheck() ? set.getValBoolean() : set.isCombo() ? set.getValString() : null));
                 writer.println(set.getParentMod().getName()+"-"+set.getName() + ":" + (set.isSlider() ? set.getValDouble() : set.isCheck() ? set.getValBoolean() : set.isCombo() ? set.getValString() : null));

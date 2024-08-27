@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Client.iml" filepath="$PROJECT_DIR$/Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hooks/Hooks/Hooks.iml" filepath="$PROJECT_DIR$/Hooks/Hooks/Hooks.iml" />
       <module fileurl="file://$PROJECT_DIR$/Injections/1.12.2/Injection1_12_2/Injection1_12_2.iml" filepath="$PROJECT_DIR$/Injections/1.12.2/Injection1_12_2/Injection1_12_2.iml" />
       <module fileurl="file://$PROJECT_DIR$/Injections/1.18.1/Injection1_18_1/Injection1_18_1.iml" filepath="$PROJECT_DIR$/Injections/1.18.1/Injection1_18_1/Injection1_18_1.iml" />
       <module fileurl="file://$PROJECT_DIR$/Injections/1.8.9/Injection1_8_9/Injection1_8_9.iml" filepath="$PROJECT_DIR$/Injections/1.8.9/Injection1_8_9/Injection1_8_9.iml" />
       <module fileurl="file://$PROJECT_DIR$/Launcher/Launcher/Launcher.iml" filepath="$PROJECT_DIR$/Launcher/Launcher/Launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Share.iml" filepath="$PROJECT_DIR$/Share.iml" />
+      <module fileurl="file://$PROJECT_DIR$/injector/injector.iml" filepath="$PROJECT_DIR$/injector/injector.iml" />
     </modules>
   </component>
 </project>

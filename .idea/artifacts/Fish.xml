@@ -13,9 +13,11 @@
         <element id="file-copy" path="$PROJECT_DIR$/fish/launcher.exe" />
         <element id="file-copy" path="$PROJECT_DIR$/fish/libagent.dll" />
         <element id="file-copy" path="$PROJECT_DIR$/fish/libinjector.dll" />
-        <element id="artifact" artifact-name="hooks" />
+        <element id="artifact" artifact-name="Loader:jar" />
       </element>
       <element id="file-copy" path="$PROJECT_DIR$/fish/fishgc使用方法.txt" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/asm-commons-9.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/lib/asm-9.7.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

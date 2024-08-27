@@ -55,7 +55,6 @@
     <orderEntry type="library" name="flatlaf-3.1.1" level="project" />
     <orderEntry type="library" name="launchwrapper-1.12 (3)" level="project" />
     <orderEntry type="library" name="launchwrapper-1.12 (4)" level="project" />
-    <orderEntry type="module" module-name="Injection1_8_9" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -66,7 +65,16 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="ow2.asm.commons" level="project" />
-    <orderEntry type="module" module-name="Hooks" exported="" />
-    <orderEntry type="library" name="asm-commons-9.7" level="project" />
+    <orderEntry type="module" module-name="Hooks" />
+    <orderEntry type="module" module-name="Injection1_8_9" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/asm-commons-9.7.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

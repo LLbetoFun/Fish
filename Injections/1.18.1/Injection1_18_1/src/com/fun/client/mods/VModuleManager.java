@@ -4,6 +4,7 @@ import com.fun.client.mods.combat.*;
 import com.fun.client.mods.movement.KeepSprint;
 import com.fun.client.mods.movement.StrafeFix;
 import com.fun.client.mods.player.ChestStealer;
+import com.fun.client.mods.player.InvCleaner;
 import com.fun.client.mods.render.FreeLook;
 import com.fun.client.mods.render.HUD;
 import com.fun.client.mods.render.NotificationModule;
@@ -33,6 +34,7 @@ public class VModuleManager {
     public Scaffold scaffold;
     public Velocity velocity;
     public ChestStealer chestStealer;
+    public InvCleaner invCleaner;
 
     public void init(){
         //Minecraft.getInstance().getWindow().setTitle("钓鱼岛");
@@ -51,6 +53,7 @@ public class VModuleManager {
         scaffold=new Scaffold();
         velocity=new Velocity();
         chestStealer=new ChestStealer();
+        invCleaner=new InvCleaner();
     }
     public void mouseFix() {
        //todo

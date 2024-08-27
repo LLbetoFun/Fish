@@ -4,9 +4,12 @@ import com.fun.inject.Bootstrap;
 import com.fun.inject.NativeUtils;
 import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.inject.utils.ReflectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Definer {
@@ -21,7 +24,13 @@ public class Definer {
 
         }
         catch (Exception e){
-            e.printStackTrace();
+            System.out.println("err:"+className);
+            File fo = new File(System.getProperty("user.home"), className.replace('.','/') + ".class");
+            try {
+                FileUtils.writeByteArrayToFile(fo, bytes);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             return;
         }
         if(cn==null)return;

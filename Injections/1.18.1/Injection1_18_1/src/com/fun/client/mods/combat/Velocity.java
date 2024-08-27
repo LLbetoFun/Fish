@@ -136,17 +136,17 @@ public class Velocity extends VModule {
 
     @Override
     public void onTick(EventTick event) {
-        super.onTick(event);
         if(mode.getValString().equalsIgnoreCase("GrimNoXZ")) {
             if(registerManager.vModuleManager.target.target!=null&&shouldNoxz){
-                for(int i=0;i<noxzCount.getValDouble();i++){
-                    mc.gameMode.attack(mc.player,registerManager.vModuleManager.target.target);
+                for(int i=0;i<noxzCount.getValDouble();i++) {
+                    mc.getConnection().send(ServerboundInteractPacket.createAttackPacket(registerManager.vModuleManager.target.target, mc.player.isShiftKeyDown()));
+                    mc.player.setSprinting(false);
+                    mc.player.setDeltaMovement(mc.player.getDeltaMovement().multiply(0.6, 1.0, 0.6));
                     PacketUtils.sendPacket(new ServerboundSwingPacket(InteractionHand.MAIN_HAND));
-                    shouldNoxz=false;
-                    System.out.println(i);
+                    shouldNoxz = false;
                 }
+
             }
         }
-
     }
 }

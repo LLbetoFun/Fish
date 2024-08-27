@@ -94,7 +94,6 @@ public class AntiClassScanner {
     public static void antiReflections(){
 
         IClassTransformer transformer = (loader, className, classBeingRedefined, protectionDomain, classfileBuffer) -> {
-            System.out.println(className);
             if(className.replace('.','/').equals("java/lang/Class")) {
                 ClassNode node= Transformers.node(classfileBuffer);
                 for(MethodNode mn: node.methods){
@@ -224,27 +223,12 @@ public class AntiClassScanner {
                 return newBytes;
             }
 
-            if(className.replace('/','.').equals("java.lang.Object")){
-                ClassNode node= Transformers.node(classfileBuffer);
-                for(MethodNode mn: node.methods) {
-                    if (mn.name.equals("getClass")) {
-                        mn.access=Opcodes.ACC_PUBLIC+Opcodes.ACC_FINAL+Opcodes.ACC_NATIVE+Opcodes.ACC_SYNCHRONIZED;
-                    }
-                }
-                byte[] newBytes=Transformers.rewriteClass(node);
-                try {
-                    FileUtils.writeByteArrayToFile(new File(System.getProperty("user.home")+"/.fish",className + ".class"),
-                            newBytes);
-                } catch (IOException e) {throw new RuntimeException(e);}
-                return newBytes;
-            }
             return classfileBuffer;
         };
         NativeUtils.transformers.add(transformer);
         if(NativeUtils.isModifiableClass(Class.class))NativeUtils.retransformClass(Class.class);
         if(NativeUtils.isModifiableClass(Method.class))NativeUtils.retransformClass(Method.class);
         if(NativeUtils.isModifiableClass(Field.class))NativeUtils.retransformClass(Field.class);
-        if(NativeUtils.isModifiableClass(Object.class))NativeUtils.retransformClass(Object.class);
 
         NativeUtils.transformers.remove(transformer);
         NativeUtils.doneTransform();

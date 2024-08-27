@@ -6,7 +6,6 @@ import com.fun.client.settings.Setting;
 import com.fun.eventapi.event.events.EventUpdate;
 import com.fun.inject.mapper.Mapper;
 import com.fun.utils.math.Timer;
-import com.fun.utils.version.fields.Fields;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

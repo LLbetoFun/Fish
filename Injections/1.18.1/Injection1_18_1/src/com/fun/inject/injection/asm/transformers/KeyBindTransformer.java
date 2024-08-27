@@ -7,7 +7,6 @@ import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.mapper.Mapper;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.InsnList;

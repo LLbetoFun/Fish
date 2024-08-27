@@ -15,16 +15,28 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 
 public class Target extends VModule {
     public Entity target = null;
     public ArrayList<Entity> bots = new ArrayList<>();
+    public ArrayList<Entity> ts = new ArrayList<>();
     public Setting onlyPlayer = new Setting("OnlyPlayer", this, false);
     public Setting antiBot = new Setting("AntiBot", this, false);
     public Setting range = new Setting("Range", this, 6.0, 0, 6.0, false);
     public Setting invisible = new Setting("Invisible", this, false);
+    public Setting teams = new Setting("Teams", this, false);
+    public Setting armorColor = new Setting("ArmorColor", this, false){
+        @Override
+        public boolean isVisible() {
+            return teams.getValBoolean();
+        }
+    };
+    //armorColor
     public double dist = Double.MAX_VALUE;
 
     @Override
@@ -75,6 +87,17 @@ public class Target extends VModule {
                 }
                 if (target != null && bots.contains(target)) target = null;
             }
+            if(teams.getValBoolean()){
+                ts.clear();
+                for (Player p : mc.level.players()) {
+                    if (p == null) continue;
+                    if(p instanceof LocalPlayer)continue;
+                    if(isSameTeam(p))ts.add(p);
+                }
+                if (target != null && ts.contains(target)) target = null;
+
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,6 +106,21 @@ public class Target extends VModule {
 
     public Target() {
         super("Target", Category.Combat);
+    }
+    public boolean isSameTeam(LivingEntity entity) {
+        if (this.armorColor.getValBoolean() && entity instanceof Player entityPlayer) {
+            ItemStack myHead = (ItemStack)mc.player.getInventory().armor.get(3);
+            ItemStack entityHead = (ItemStack)entityPlayer.getInventory().armor.get(3);
+            if (!myHead.isEmpty() && !entityHead.isEmpty() && myHead.getItem() instanceof ArmorItem && entityHead.getItem() instanceof ArmorItem) {
+                return this.getArmorColor(myHead) == this.getArmorColor(entityHead);
+            }
+        }
+
+        return false;
+    }
+
+    private int getArmorColor(ItemStack stack) {
+        return stack.getItem() instanceof DyeableLeatherItem ? ((DyeableLeatherItem)stack.getItem()).getColor(stack) : -1;
     }
 
 

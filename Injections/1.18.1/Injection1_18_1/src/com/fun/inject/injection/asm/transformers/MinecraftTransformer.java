@@ -3,23 +3,11 @@ package com.fun.inject.injection.asm.transformers;
 import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventTick;
 import com.fun.eventapi.event.events.EventView;
-import com.fun.inject.Mappings;
 import com.fun.inject.injection.asm.api.Inject;
-import com.fun.inject.injection.asm.api.Mixin;
 import com.fun.inject.injection.asm.api.Transformer;
-import com.fun.inject.mapper.Mapper;
-import com.fun.utils.version.clazz.Classes;
-import com.fun.utils.version.methods.Methods;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GameRenderer;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class MinecraftTransformer extends Transformer {
     public MinecraftTransformer() {

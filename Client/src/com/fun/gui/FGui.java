@@ -11,8 +11,7 @@ import com.fun.gui.impl.ModuleComponent;
 import com.fun.gui.impl.settings.BoolSetting;
 import com.fun.gui.impl.settings.NumberSetting;
 import com.fun.gui.impl.settings.StringSetting;
-import com.fun.inject.InjectUtils;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.fun.inject.Bootstrap;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,7 +86,7 @@ public class FGui extends JFrame {
             public void windowClosing(WindowEvent e) {
                 ConfigModule.saveConfig();
                 try {
-                    InjectUtils.destroyClient();
+                    Bootstrap.destroyClient();
                 }
                 catch (Exception ex){
 

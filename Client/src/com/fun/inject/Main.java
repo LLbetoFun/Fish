@@ -47,7 +47,8 @@ public class Main {
             }
             try {
                 PrintWriter pw = new PrintWriter(f);
-                pw.print(new File(path,"FunGhostClient.jar").getAbsolutePath());
+                pw.println(new File(path,"FunGhostClient.jar").getAbsolutePath());
+                if(!Main.class.getName().contains("com.fun"))pw.print(Main.class.getName().substring(0, Math.min(16, Main.class.getName().length())));
                 pw.close();
             } catch (FileNotFoundException e) {
 
@@ -59,7 +60,11 @@ public class Main {
 
 
         }
-
+    public static String getNewPackage(){
+        if(!Main.class.getName().contains("com.fun"))
+            return (Main.class.getName().substring(0, Math.min(16, Main.class.getName().length())));
+        return null;
+    }
     public static void main(String[] args) {
         injector=new Injector();
     }

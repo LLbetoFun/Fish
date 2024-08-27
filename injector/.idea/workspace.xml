@@ -23,9 +23,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35ea5eb3-44a7-45cc-b4aa-d201e785f06d" name="Changes" comment="神秘修复">
+      <change afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/mapper/ObfMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Launcher/Launcher/src/ObfMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../Loader/Loader.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/FunGhostClient.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/hooks.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/injections/1.12.2.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/injections/1.18.1.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/injections/1.8.9.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/launcher.exe" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/libagent.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fish/libinjector.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/.fish/fishgc使用方法.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/Fish.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../fish/Fish/setup.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/Fish.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/artifacts/Fish.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/FunGhostClient_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/artifacts/FunGhostClient_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/client/config/ConfigModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/client/config/ConfigModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Share.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/gui/FGui.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/gui/FGui.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/gui/OldFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/gui/OldFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/Bootstrap.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/Bootstrap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/InjectUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/InjectUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/define/Definer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/define/Definer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/magic/AntiClassScanner.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/magic/AntiClassScanner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/inject/transform/GameClassTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/inject/transform/GameClassTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/com/fun/network/packets/PacketDestroy.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/com/fun/network/packets/PacketDestroy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Client/src/net/minecraft/A/A.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Client/src/net/minecraft/A/A.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.12.2/Injection1_12_2/Injection1_12_2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.12.2/Injection1_12_2/Injection1_12_2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/Injection1_18_1.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/Injection1_18_1.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/EntityPlayerSP.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/EntityPlayerSP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/KeyBindTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/KeyBindTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/MinecraftTransformer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.18.1/Injection1_18_1/src/com/fun/inject/injection/asm/transformers/MinecraftTransformer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/Injection1_8_9.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/Injection1_8_9.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/src/com/fun/client/mods/player/ChestStealer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/src/com/fun/client/mods/player/ChestStealer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/src/com/fun/inject/injection/asm/api/Transformers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Injections/1.8.9/Injection1_8_9/src/com/fun/inject/injection/asm/api/Transformers.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Launcher/Launcher/Launcher.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../Launcher/Launcher/Launcher.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../Launcher/Launcher/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Launcher/Launcher/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Launcher/Launcher/src/Mapper.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Launcher/Launcher/src/MyClassWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Launcher/Launcher/src/MyClassWriter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/FunGhostClient.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/FunGhostClient.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/injection_forge.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injection_forge.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../fish/injection_none.jar" beforeDir="false" afterPath="$PROJECT_DIR$/../fish/injection_none.jar" afterDir="false" />
@@ -37,8 +75,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_deps" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/.ninja_log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/ReflectiveLoader.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/ReflectiveLoader.c.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/dllmain.c.obj" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/agent.dir/src/dll/dllmain.c.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/dll/ReflectiveLoader.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/dll/ReflectiveLoader.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/dll/dllmain.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/dll/dllmain.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -285,6 +323,37 @@
       <workItem from="1724127573763" duration="90000" />
       <workItem from="1724128920078" duration="272000" />
       <workItem from="1724373633797" duration="2719000" />
+      <workItem from="1724412014335" duration="223000" />
+      <workItem from="1724413088071" duration="269000" />
+      <workItem from="1724413589253" duration="79000" />
+      <workItem from="1724414377276" duration="350000" />
+      <workItem from="1724415580887" duration="42000" />
+      <workItem from="1724416861719" duration="1463000" />
+      <workItem from="1724471954254" duration="256000" />
+      <workItem from="1724473284329" duration="42000" />
+      <workItem from="1724473340010" duration="5000" />
+      <workItem from="1724474296309" duration="211000" />
+      <workItem from="1724476772582" duration="32000" />
+      <workItem from="1724477510455" duration="67000" />
+      <workItem from="1724481212311" duration="33000" />
+      <workItem from="1724492954831" duration="787000" />
+      <workItem from="1724549566512" duration="74000" />
+      <workItem from="1724550653492" duration="901000" />
+      <workItem from="1724553488262" duration="490000" />
+      <workItem from="1724555897988" duration="35000" />
+      <workItem from="1724560813876" duration="3478000" />
+      <workItem from="1724594535040" duration="23000" />
+      <workItem from="1724595645187" duration="132000" />
+      <workItem from="1724596518090" duration="1140000" />
+      <workItem from="1724648811845" duration="54000" />
+      <workItem from="1724649590347" duration="655000" />
+      <workItem from="1724651160829" duration="17000" />
+      <workItem from="1724651237009" duration="6000" />
+      <workItem from="1724653140341" duration="5387000" />
+      <workItem from="1724675440001" duration="638000" />
+      <workItem from="1724676780703" duration="665000" />
+      <workItem from="1724678276716" duration="160000" />
+      <workItem from="1724678847303" duration="857000" />
     </task>
     <task id="LOCAL-00001" summary="fix inject thread">
       <option name="closed" value="true" />

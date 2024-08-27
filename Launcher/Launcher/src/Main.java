@@ -2,9 +2,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -39,9 +36,10 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        traverseFolder(destDir.getAbsolutePath());
 
     }
-    public static void traverseFolder2(String path) {
+    public static void traverseFolder(String path) {
 
         File file = new File(path);
         if (file.exists()) {
@@ -53,10 +51,10 @@ public class Main {
                 for (File file2 : files) {
                     if (file2.isDirectory()) {
                         //System.out.println("文件夹:" + file2.getAbsolutePath());
-                        traverseFolder2(file2.getAbsolutePath());
+                        traverseFolder(file2.getAbsolutePath());
                     } else {
                         if(file2.getAbsolutePath().endsWith(".jar")){
-                            Mapper.mapJar(file2);
+                            ObfMapper.mapJar(file2);
                         }
                         //System.out.println("文件:" + );
                     }

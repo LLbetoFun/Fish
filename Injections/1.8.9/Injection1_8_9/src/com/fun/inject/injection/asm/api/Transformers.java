@@ -1,10 +1,12 @@
 package com.fun.inject.injection.asm.api;
 
 import com.fun.inject.Mappings;
+import com.fun.inject.mapper.ObfMapper;
 import com.fun.inject.utils.FishClassWriter;
 import com.fun.inject.injection.asm.transformers.*;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +45,7 @@ public class Transformers {
     public static byte[] rewriteClass(ClassNode node) {
         try {
             ClassWriter writer = new FishClassWriter(COMPUTE_MAXS | COMPUTE_FRAMES);
+            ClassRemapper remapper = new ClassRemapper(node, new ObfMapper.ReMapper());
             node.accept(writer);
             return writer.toByteArray();
         }

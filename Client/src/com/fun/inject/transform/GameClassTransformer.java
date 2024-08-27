@@ -6,9 +6,14 @@ import com.fun.inject.injection.asm.api.Mixin;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.injection.asm.api.Transformers;
 import com.fun.inject.mapper.Mapper;
+import com.fun.inject.mapper.ObfMapper;
+import com.fun.inject.utils.FishClassWriter;
 import com.fun.utils.version.methods.Methods;
 import org.apache.commons.io.FileUtils;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.commons.ClassRemapper;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -17,6 +22,9 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+
+import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
+import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 
 public class GameClassTransformer implements IClassTransformer {
     public static ClassNode node(byte[] bytes) {
@@ -119,7 +127,7 @@ public class GameClassTransformer implements IClassTransformer {
 
                 }
 
-                byte[] newBytes = Transformers.rewriteClass(node);
+                byte[] newBytes = rewriteClass(node);
                 if (newBytes == null) {
                     System.out.println(className + " rewriteClass failed");
                     return null;
@@ -140,5 +148,17 @@ public class GameClassTransformer implements IClassTransformer {
             }
         }
         return null;
+    }
+    public static byte[] rewriteClass(ClassNode node) {
+        try {
+            ClassWriter writer = new FishClassWriter(COMPUTE_MAXS | COMPUTE_FRAMES);
+            ClassRemapper remapper = new ClassRemapper(writer, new ObfMapper.ReMapper());
+            node.accept(remapper);
+            return writer.toByteArray();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 }

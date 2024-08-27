@@ -11,6 +11,7 @@ import com.fun.inject.injection.asm.transformers.ClassLoaderTransformer;
 import com.fun.inject.mapper.Mapper;
 import com.fun.inject.transform.GameClassTransformer;
 import com.fun.inject.utils.ReflectionUtils;
+import com.fun.network.packets.PacketDestroy;
 import com.fun.network.packets.PacketInit;
 import com.fun.network.packets.PacketMCPath;
 import com.fun.network.packets.PacketMCVer;
@@ -20,10 +21,13 @@ import com.fun.network.TCPServer;
 import com.fun.client.font.FontManager;
 
 import org.objectweb.asm.*;
+import org.objectweb.asm.commons.ClassRemapper;
+import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.*;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -37,26 +41,17 @@ import java.util.zip.ZipInputStream;
 
 public class Bootstrap {
 
-    public static String VERSION;
+    public static String VERSION = "1.4";
     public static String jarPath;
-    public static boolean isAgent;
+    public static boolean isAgent = false;
     public static int SERVERPORT = 11432;
-    public static Map<String, byte[]> classes;
+    public static Map<String, byte[]> classes = new HashMap<>();
     public static Native instrumentation;
     public static GameClassTransformer transformer;
-    public static MinecraftType minecraftType;
-    public static MinecraftVersion minecraftVersion;
-    public static String[] selfClasses;
+    public static MinecraftType minecraftType = MinecraftType.VANILLA;
+    public static MinecraftVersion minecraftVersion = MinecraftVersion.VER_189;
+    public static String[] selfClasses = new String[]{"com.fun","org.newdawn","javax.vecmath","com.sun.jna","org.objectweb"};
     public static ClassLoader classLoader;
-
-    static {
-        VERSION="1.4";
-        isAgent = false;
-        classes= new HashMap<>();
-        selfClasses=new String[]{"com.fun","org.newdawn","javax.vecmath","com.sun.jna","net/minecraft"};
-        minecraftType=MinecraftType.VANILLA;
-        minecraftVersion=MinecraftVersion.VER_189;
-    }
 
     private static byte[] readStream(InputStream inStream) throws Exception {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
@@ -66,6 +61,7 @@ public class Bootstrap {
             outStream.write(buffer, 0, len);
         outStream.close();
         return outStream.toByteArray();
+
     }
 
     public static void cacheJar(File file) throws Exception {
@@ -192,8 +188,7 @@ public class Bootstrap {
     }
 
     public static boolean isSelfClass(String name){
-        //NativeUtils.messageBox(name,"Fish");
-        //System.out.println(name+" hook");
+        if(Main.getNewPackage()!=null&&name.startsWith(Main.getNewPackage()))return true;
         name=name.replace('/','.');
         for (String cname : getSelfClasses()) {
             if (name.startsWith(cname))
@@ -263,7 +258,6 @@ public class Bootstrap {
         }
     }
     public static void magic(){//启动注入线程
-
         new Thread(Bootstrap::inject).start();
     }
     public static native void inject();//初始化完毕后调用start
@@ -275,7 +269,7 @@ public class Bootstrap {
                 String line="";
                 while ((line = bufferedreader.readLine()) != null) {
                     jarPath=line;
-
+                    break;
                 }
                 bufferedreader.close();
 
@@ -315,7 +309,7 @@ public class Bootstrap {
                     }
 
 
-                    Class<?> agentClass = findClass("com.fun.inject.Bootstrap");
+                    Class<?> agentClass = findClass(Bootstrap.class.getName());
 
                     for (Method m : agentClass.getDeclaredMethods()) {
                         if (m.getName().equals("init")) {
@@ -325,14 +319,12 @@ public class Bootstrap {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                transform();
 
-
+            transform();
 
     }
 
     public static void transform() {
-
         Transformers.init();
         transformer = new GameClassTransformer();
         instrumentation.addTransformer(transformer, true);
@@ -393,12 +385,30 @@ public class Bootstrap {
 
 
 
+
     }
 
     public static Class<?> findClass(String name) throws ClassNotFoundException {
       return classLoader.loadClass(name.replace('/','.'));
     }
 
+    public static void destroyClient() {
+        if(!isAgent){
+            TCPClient.send(SERVERPORT,new PacketDestroy());
+            return;
+        }
+        instrumentation.removeTransformer(transformer);
+        Transformers.transformers.forEach(it -> {
+            NativeUtils.redefineClass(it.getClazz(), it.getOldBytes());
+        });
+        try {
+            findClass(FunGhostClient.class.getName()).getDeclaredMethod("destroyClient").invoke(null);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassNotFoundException e) {
+            e.printStackTrace();
+
+        }
+        NativeUtils.destroy();
+    }
 
 
     ;

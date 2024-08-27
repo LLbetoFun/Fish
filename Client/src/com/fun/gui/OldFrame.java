@@ -8,7 +8,6 @@ import com.fun.client.mods.Module;
 import com.fun.client.settings.Setting;
 import com.fun.inject.Bootstrap;
 import com.fun.inject.Main;
-import com.fun.inject.InjectUtils;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -252,7 +251,7 @@ public class OldFrame extends JFrame {
             public void windowClosing(WindowEvent e) {
                 ConfigModule.saveConfig();
                 try {
-                    InjectUtils.destroyClient();
+                    Bootstrap.destroyClient();
                 }
                 catch (Exception ex){
 

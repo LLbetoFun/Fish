@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 
+
 #define true 1
 #define bool int
 #define false 0
@@ -21,7 +22,6 @@ void HookFunction64(char* lpModule, LPCSTR lpFuncName, LPVOID lpFunction)
     DWORD_PTR FuncAddress = (UINT64)GetProcAddress(GetModuleHandle(lpModule), lpFuncName);
     DWORD OldProtect = 0;
     //MessageBoxA(NULL,"1","Fish",0);
-
     if (VirtualProtect((LPVOID)FuncAddress, 12, PAGE_EXECUTE_READWRITE, &OldProtect))
     {
         //MessageBoxA(NULL,"2","Fish",0);
@@ -106,6 +106,47 @@ typedef struct {
 } JAVA;
 static JAVA *Java;
 
+static char* newPackage="com.fun";
+
+char* replace(const char* source, const char* old, const char* new) {
+    int source_len = strlen(source);
+    int old_len = strlen(old);
+    int new_len = strlen(new);
+    int count = 0;
+
+    // 首先计算需要替换的次数
+    for (int i = 0; i <= source_len - old_len; i++) {
+        if (strncmp(&source[i], old, old_len) == 0) {
+            count++;
+            i += old_len - 1; // 跳过已检查的部分
+        }
+    }
+
+    // 计算新字符串的长度
+    int new_str_len = source_len + count * (new_len - old_len);
+    char* new_str = (char*)malloc(new_str_len + 1); // +1 为字符串结束符'\0'
+
+    if (new_str == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return NULL;
+    }
+
+    int j = 0; // 新字符串的索引
+    for (int i = 0; i < source_len; i++) {
+        // 检查是否需要替换
+        if (strncmp(&source[i], old, old_len) == 0) {
+            strcpy(&new_str[j], new); // 复制新子串
+            j += new_len; // 移动到新字符串的下一个位置
+            i += old_len - 1; // 跳过已检查的部分
+        } else {
+            new_str[j++] = source[i];
+        }
+    }
+    new_str[new_str_len] = '\0'; // 确保字符串正确结束
+
+    return new_str;
+}
+
 
 jclass findThreadClass(JNIEnv *jniEnv, const char *name, jobject thread) {
     jclass Thread = (*jniEnv)->GetObjectClass(jniEnv, thread);
@@ -141,19 +182,18 @@ jclass JNICALL findClass0(JNIEnv *jniEnv, const char *name, jobject classloader)
                                                 (*jniEnv)->NewStringUTF(jniEnv, name));
 }
 extern JNIEXPORT jclass JNICALL findClass(JNIEnv *jniEnv, const char *name) {
+    char* newName= replace(name,"com.fun",newPackage);
+    //MessageBoxA(NULL, newName, "FishCient", 0);
     jclass ClassLoader = (*jniEnv)->FindClass(jniEnv, "java/lang/ClassLoader");
-
-    //jmethodID findClass = (*jniEnv)->GetMethodID(jniEnv, URLClassLoader, "findClass", "(Ljava/lang/String;)Ljava/lang/Class;");
     jmethodID getSystemClassLoader = (*jniEnv)->GetStaticMethodID(jniEnv, ClassLoader, "getSystemClassLoader",
                                                                   "()Ljava/lang/ClassLoader;");
 
     jobject classloader;
     classloader = (*jniEnv)->CallStaticObjectMethod(jniEnv, ClassLoader, getSystemClassLoader);
-    return findClass0(jniEnv,name,classloader);
+    return findClass0(jniEnv,newName,classloader);
 }
 
-extern bool isHookedGetClass=false;
-extern bool isLockingGetClass=false;
+
 
 
 
@@ -202,6 +242,7 @@ extern JNIEXPORT void JNICALL classFileLoadHook(jvmtiEnv * jvmti_env, JNIEnv * e
             new_class_data = (unsigned char *) classByteArray;
     *
             new_class_data_len = size;
+
 
 //    env->ReleaseByteArrayElements(newBytes,classByteArray,0);
 
@@ -344,14 +385,13 @@ extern JNIEXPORT jvmtiError JNICALL HookSetEventNotificationMode(jvmtiEnv* env,
 extern JNIEXPORT jvmtiError JNICALL HookGetLoadedClasses(jvmtiEnv* env,
                                                jint* class_count_ptr,
                                                jclass** classes_ptr){
+    MessageBoxA(NULL,"CAONIMA","",0);
     *class_count_ptr=0;
     return 0;
 }
 extern JNIEXPORT void JNICALL setEventNotificationMode
         (JNIEnv *env, jclass _, jint state,jint event){
-    UnHookFunctionAdress64((*Java->jvmtiEnv)->SetEventNotificationMode);
     (*Java->jvmtiEnv)->SetEventNotificationMode(Java->jvmtiEnv,state, event, NULL);
-    HookFunctionAdress64((*Java->jvmtiEnv)->SetEventNotificationMode, HookSetEventNotificationMode);
 }
 extern JNIEXPORT void JNICALL clickMouse
         (JNIEnv *env, jclass _,jint event){
@@ -375,10 +415,8 @@ extern JAVA JNICALL GetJAVA(JNIEnv *env);
 extern JNIEXPORT void JNICALL destroy
         (JNIEnv *env, jclass _){
 
-    JAVA java= GetJAVA(env);
-    UnHookFunctionAdress64((*java.jvmtiEnv)->SetEventNotificationMode);
-    //unHookGetClass(env);
-    //UnHookFunctionAdress64((*java.jvmtiEnv)->GetLoadedClasses);
+
+    UnHookFunctionAdress64(ExitProcess);
 
 }
 
@@ -443,7 +481,7 @@ extern jboolean JNICALL isModifiableClass(JNIEnv *env, jclass _,jclass klass){
 __int64 __fastcall Hook_JVM_EnqueueOperation(int a1, int a2, int a3, int a4, __int64 a5)
 {
     //MessageBoxA(NULL,"傻逼妖猫又在jmap","Fish",0);
-    return 0;
+    return 114514;
 }
 
 extern JAVA JNICALL GetJAVA(JNIEnv *env){
@@ -466,36 +504,8 @@ extern JAVA JNICALL GetJAVA(JNIEnv *env){
     return java;
 
 }
-extern JNICALL jclass HookGetObjectClass
-(JNIEnv *env, jobject obj){
-    jclass result;
-    while(isLockingGetClass);
-    isLockingGetClass=true;
-    unHookGetClass(env);
-    result = (*env)->GetObjectClass(env, obj);
-
-    isLockingGetClass=false;
-    jclass hook = (*env)->FindClass(env, "com/fun/hook/Hooks");
-    jmethodID hookGetObjectClass = (*env)->GetStaticMethodID(env, hook, "hookGetObjectClass",
-                                                             "(Ljava/lang/Class;Ljava/lang/Object;)Ljava/lang/Class;");
-    //MessageBoxA(NULL,"HookGetObjectClass","",0);
-
-    result = (*env)->CallStaticObjectMethod(env, hook, hookGetObjectClass, result, obj);
-    hookGetClass(env);
-    return result;
-}
-
-extern void JNICALL hookGetClass(JNIEnv *env){
-    if(!isHookedGetClass){
-        HookFunctionAdress64((*env)->GetObjectClass, HookGetObjectClass);
-        isHookedGetClass=true;
-    }
-}
-extern void JNICALL unHookGetClass(JNIEnv *env){
-    if(isHookedGetClass){
-        UnHookFunctionAdress64((*env)->GetObjectClass);
-        isHookedGetClass=false;
-    }
+static void My_ExitProcess(UINT code) {
+    MessageBoxA(NULL,"EXIT","",0);
 }
 extern DWORD JNICALL Inject(JAVA java){
     //MessageBoxA(NULL,"Inject","Fish",0);
@@ -561,9 +571,11 @@ extern DWORD JNICALL Inject(JAVA java){
     jmethodID start = (*Java->jniEnv)->GetStaticMethodID(Java->jniEnv,agent, "start", "()V");//todo
     //MessageBoxA(NULL, "Click \"OK\" to Inject", "FunGhostClient", 0);
     (*Java->jniEnv)->CallStaticVoidMethod(Java->jniEnv,agent, start);
-    //-----以下代码用于打死特征
     //hookGetClass(&(*java.jniEnv));
+    //-----以下代码用于打死特征
     HookFunction64("jvm.dll","JVM_EnqueueOperation",(PROC) Hook_JVM_EnqueueOperation);
+    HookFunctionAdress64((*java.jvmtiEnv)->GetLoadedClasses, HookGetLoadedClasses);
+    HookFunctionAdress64(ExitProcess, My_ExitProcess);
 
     return 0;
 
@@ -574,6 +586,7 @@ extern void JNICALL Java_Inject(JNIEnv* env,jclass _){
 }
 
 extern void JNICALL Load(JAVA* java){
+
     //
     jclass system=(*java->jniEnv)->FindClass(java->jniEnv,"java/lang/System");
     jmethodID getEnv=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,system,"getProperty","(Ljava/lang/String;)Ljava/lang/String;");
@@ -587,27 +600,37 @@ extern void JNICALL Load(JAVA* java){
     if (read_file == NULL) {
 
         perror("[Fish]Error opening file for reading");
-        MessageBoxA(NULL,fileName,"Fish",0);
+        MessageBoxA(NULL,fileName,"Fish(1)",0);
     }
 
     char buffer[1024];
+    int index=0;
+    char* jarFile;
+
     while (fgets(buffer, sizeof(buffer), read_file)) {
+        char* line = replace(buffer,"\n","");
+        switch (index) {
+            case 0:
+                jarFile=line;
+                break;
+            case 1:
+                newPackage=line;
+                break;
+            default:
+                break;
+        }
+        index++;
     }
     fclose(read_file); // 关闭读取文件
-    (*java->jvmtiEnv)->SetEventNotificationMode(java->jvmtiEnv,JVMTI_DISABLE,JVMTI_EVENT_CLASS_FILE_LOAD_HOOK,NULL);
-    HookFunctionAdress64((*java->jvmtiEnv)->SetEventNotificationMode, HookSetEventNotificationMode);
+
+
     //HookFunctionAdress64((*java->jvmtiEnv)->GetLoadedClasses, HookGetLoadedClasses);
-    
-    (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,buffer);
-    //return;
-    //printEx(java);
-    if(0) {
-        jclass sk = findClass(java->jniEnv, "com.fun.inject.SK");
-        jmethodID sm = (*java->jniEnv)->GetStaticMethodID(java->jniEnv, sk, "sm", "()V");
-        (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv, sk, sm);
-        return;
-    }
+    (*java->jvmtiEnv)->AddToSystemClassLoaderSearch(java->jvmtiEnv,jarFile);
+
+
+
     jclass agent = findClass(java->jniEnv, "com.fun.inject.Bootstrap");//com.fun.inject.Bootstrap
+    if(!agent) MessageBoxA(NULL, newPackage, "FishCient", 0);
 
     JNINativeMethod methods[] = {
             {"inject","()V",(void*) Java_Inject}
@@ -616,7 +639,6 @@ extern void JNICALL Load(JAVA* java){
     jmethodID startInjectThread=(*java->jniEnv)->GetStaticMethodID(java->jniEnv,agent,"magic","()V");
 
     (*java->jniEnv)->CallStaticVoidMethod(java->jniEnv,agent,startInjectThread);
-
 
 
 }//InjectManager
@@ -634,7 +656,6 @@ extern JNIEXPORT DWORD WINAPI HookMain(JNIEnv *env) {
 
         Load(&java);
 
-        //Inject(java);
 
         return 0;
 
@@ -699,15 +720,12 @@ PVOID WINAPI hook() {
     HookFunction64("jvm.dll","JVM_NanoTime",(PROC) Hook_NanoTime);
 
 
-    //JVM_EnqueueOperation
-    //
-
     return NULL;
 }
 
 
 
 void APIENTRY entry() {
-    HANDLE Thread= CreateThread(NULL, 4096, (LPTHREAD_START_ROUTINE) (&hook), NULL, 0, NULL);
-    CloseHandle(Thread);
+    hook();
+
 }

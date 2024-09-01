@@ -1,8 +1,6 @@
 package com.fun.gui;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
-
 import com.fun.inject.Bootstrap;
 import com.fun.inject.Main;
 
@@ -12,28 +10,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Injector extends JFrame {
-    public boolean injected=false;
+    public boolean injected = false;
+
     public Injector() throws HeadlessException {
         super();
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (UnsupportedLookAndFeelException e) {
-
+            e.printStackTrace(); // 打印异常信息，便于调试
         }
         init();
-        this.setSize(500,500);
+        this.setSize(716, 403); // 初始窗口大小
         this.setVisible(true);
-
-
     }
-    private void init(){
-        setTitle("Fish"+ Bootstrap.VERSION);
+
+    private void init() {
+        setTitle("Fish" + Bootstrap.VERSION);
         setIconImage(new ImageIcon(getClass().getResource("/assets/texture/fishico2.png")).getImage());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.getContentPane().setLayout(new GridLayout());
         this.setBackground(Color.WHITE);
-        JButton jb=new JButton("Inject");
 
+        JButton jb = new JButton("Inject");
 
         JPanel panel = new JPanel() {
             @Override
@@ -48,31 +46,24 @@ public class Injector extends JFrame {
         // 设置面板不透明
         panel.setOpaque(false);
 
-        // 将面板添加到窗体
-        this.add(panel);
+        // 设置布局管理器为 null
+        panel.setLayout(null);
+
+        // 设置按钮的位置和大小
+        jb.setBounds(300, 300, 100, 30); // x, y, width, height
         panel.add(jb);
 
-        // 显示窗体
+        // 将面板添加到窗体
+        this.add(panel);
 
         jb.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                jb.setVisible(false);
-                new Thread(){
-                    @Override
-                    public void run() {
-                        super.run();
-                        for(int i=500;i>0;i--){
-                            Injector.this.setSize(i,i);
-                        }
-                        Injector.this.setVisible(false);
-                        Main.start();
-                    }
-                }.start();
-
+                // 隐藏窗口
+                Injector.this.setVisible(false);
+                // 调用 Main.start() 方法
+                Main.start();
             }
         });
-
     }
 }

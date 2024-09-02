@@ -1,23 +1,19 @@
 package com.fun.client.mods;
 
 import com.fun.client.mods.combat.*;
-import com.fun.client.mods.movement.KeepSprint;
+import com.fun.client.mods.movement.Sprint;
 import com.fun.client.mods.movement.StrafeFix;
 import com.fun.client.mods.player.ChestStealer;
 import com.fun.client.mods.player.InvCleaner;
-import com.fun.client.mods.render.FreeLook;
-import com.fun.client.mods.render.HUD;
-import com.fun.client.mods.render.NotificationModule;
-import com.fun.client.mods.render.Rotations;
+import com.fun.client.mods.render.*;
 import com.fun.client.mods.world.Eagle;
 import com.fun.client.mods.world.Scaffold;
 import com.fun.inject.injection.wrapper.impl.MinecraftWrapper;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 
 
 public class VModuleManager {
-    public KeepSprint sprint;
+    public Sprint sprint;
     public HUD hud;
     public NotificationModule notification;
     public Reach reach;
@@ -35,10 +31,12 @@ public class VModuleManager {
     public Velocity velocity;
     public ChestStealer chestStealer;
     public InvCleaner invCleaner;
+    public BackTrack backTrack;
+    public ESP esp;
 
     public void init(){
         //Minecraft.getInstance().getWindow().setTitle("钓鱼岛");
-        sprint=new KeepSprint();
+        sprint=new Sprint();
         hud=new HUD();
         notification=new NotificationModule();
         reach=new Reach();
@@ -54,6 +52,8 @@ public class VModuleManager {
         velocity=new Velocity();
         chestStealer=new ChestStealer();
         invCleaner=new InvCleaner();
+        esp=new ESP();
+        backTrack=new BackTrack();
     }
     public void mouseFix() {
        //todo

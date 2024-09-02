@@ -9,6 +9,7 @@ import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.mapper.Mapper;
 import com.fun.inject.Mappings;
 
+import net.minecraft.client.player.LocalPlayer;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -106,15 +107,14 @@ public class EntityPlayerSP extends Transformer {
         MethodInsnNode target=null;
         for (int i = 0; i < methodNode.instructions.size(); ++i) {
             AbstractInsnNode node = methodNode.instructions.get(i);
-            if(node instanceof MethodInsnNode&& ((MethodInsnNode) node).name.equals(
+            if (node instanceof MethodInsnNode && ((MethodInsnNode) node).name.equals(
                     Mappings.getObfMethod("m_120586_"))
-            &&((MethodInsnNode) node).owner.equals(
-                    Mappings.getObfClass("net/minecraft/client/tutorial/Tutorial"))){//
-                target= (MethodInsnNode) node;
+                    && ((MethodInsnNode) node).owner.equals(
+                    Mappings.getObfClass("net/minecraft/client/tutorial/Tutorial"))) {//
+                target = (MethodInsnNode) node;
             }
 
         }
-
         methodNode.instructions.insert(target,list);
 
 

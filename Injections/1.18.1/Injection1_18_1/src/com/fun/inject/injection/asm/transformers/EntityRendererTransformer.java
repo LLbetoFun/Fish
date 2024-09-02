@@ -5,17 +5,20 @@ import com.fun.eventapi.EventManager;
 import com.fun.eventapi.event.events.EventAttackReach;
 import com.fun.eventapi.event.events.EventBlockReach;
 import com.fun.client.FunGhostClient;
+import com.fun.eventapi.event.events.EventRender3D;
 import com.fun.inject.injection.asm.api.Inject;
 import com.fun.inject.injection.asm.api.Transformer;
 import com.fun.inject.Mappings;
+import com.fun.inject.mapper.Mapper;
+import com.fun.utils.RenderManager;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
-import static org.objectweb.asm.Opcodes.FLOAD;
-import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.*;
 
 
 public class EntityRendererTransformer extends Transformer {
@@ -38,17 +41,11 @@ public class EntityRendererTransformer extends Transformer {
         }
 
 
-
         InsnList list = new InsnList();
 
-        //list.add(new MethodInsnNode(INVOKESTATIC, Type.getInternalName(Lepton.class), "getEventBus", "()Lcn/matrixaura/lepton/listener/bus/EventBus;", false));
-        //list.add(new TypeInsnNode(NEW, Type.getInternalName(EventRender3D.class)));
-        //list.add(new InsnNode(DUP));
         list.add(new VarInsnNode(FLOAD, 1));
-        list.add(new MethodInsnNode(INVOKESTATIC,Type.getInternalName(FunGhostClient.class),"onRender3D","(F)V"));
-        //list.add(new MethodInsnNode(INVOKESPECIAL, Type.getInternalName(EventRender3D.class), "<initFrame>", "(F)V", false));
-        //list.add(new MethodInsnNode(INVOKEVIRTUAL, Type.getInternalName(EventBus.class), "dispatch", "(Ljava/lang/Object;)Z", false));
-        //list.add(new InsnNode(POP));
+        list.add(new VarInsnNode(ALOAD, 4));
+        list.add(new MethodInsnNode(INVOKESTATIC,Type.getInternalName(EntityRendererTransformer.class),"onRender3D", Mapper.getObfMethodDesc("(FLjava/lang/Object;)V")));
 
         methodNode.instructions.insert(ldcNode, list);
 
@@ -90,13 +87,20 @@ public class EntityRendererTransformer extends Transformer {
     }
 
     public static double onAttackReach(){
+
         EventAttackReach e=new EventAttackReach(3.0d);
         EventManager.call(e);
         return e.reach;
     }
     public static float onBlockReach(float f){
+
         EventBlockReach e=new EventBlockReach(f);
         EventManager.call(e);
         return (float) e.reach;
+    }
+    public static void onRender3D(float f, Object pose){
+        RenderManager.currentPoseStack= (PoseStack) pose;
+        EventManager.call(new EventRender3D((f)));
+
     }
 }

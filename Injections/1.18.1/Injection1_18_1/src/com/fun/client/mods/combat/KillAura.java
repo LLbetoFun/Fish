@@ -6,12 +6,11 @@ import com.fun.client.mods.Category;
 import com.fun.client.mods.VModule;
 import com.fun.client.settings.Setting;
 import com.fun.client.utils.Rotation.Rotation;
-import com.fun.eventapi.event.events.EventAttackReach;
-import com.fun.eventapi.event.events.EventMotion;
-import com.fun.eventapi.event.events.EventStrafe;
-import com.fun.eventapi.event.events.EventUpdate;
+import com.fun.eventapi.event.events.*;
 import com.fun.utils.rotation.RotationUtils;
 
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.EntityHitResult;
@@ -42,10 +41,19 @@ public class KillAura extends VModule
     }
 
     @Override
+    public void onBlockReach(EventBlockReach event) {
+        super.onBlockReach(event);
+        event.reach= rangeMax.getValDouble()+(rangeMin.getValDouble()-rangeMax.getValDouble())*Math.random();
+    }
+
+    public static Entity target;
+
+    @Override
     public void onUpdate(EventUpdate event) {
         super.onUpdate(event);
         if(FunGhostClient.registerManager.vModuleManager.scaffold.isRunning())return;
         Entity target= FunGhostClient.registerManager.vModuleManager.target.target;
+
         double speed=rotationSpeed.getValDouble()+(rotationSpeed2.getValDouble()-rotationSpeed.getValDouble())*Math.random();
         if(target!=null){
 
@@ -58,9 +66,15 @@ public class KillAura extends VModule
         currentRotation= RotationUtils.limitAngleChange(new Rotation(currentRotation),new Rotation(targetRotation), (float) speed).toVec2f();
 
         FunGhostClient.rotationManager.setRation(currentRotation);
-        if(mc.hitResult instanceof EntityHitResult&&((EntityHitResult) mc.hitResult).getEntity()==target&&Math.random() <CPS.getValDouble()/20){
-            mc.gameMode.attack(mc.player,((EntityHitResult) mc.hitResult).getEntity());
-            mc.player.swing(InteractionHand.MAIN_HAND);
+        if(mc.hitResult instanceof EntityHitResult&&((EntityHitResult) mc.hitResult).getEntity()==target){
+            KillAura.target=target;
+            if(Math.random() <CPS.getValDouble()/20) {
+                mc.gameMode.attack(mc.player, ((EntityHitResult) mc.hitResult).getEntity());
+                mc.player.swing(InteractionHand.MAIN_HAND);
+            }
+        }
+        else {
+            KillAura.target=null;
         }
         if(!keepSprint.getValBoolean())mc.player.setSprinting(false);
     }
@@ -73,6 +87,13 @@ public class KillAura extends VModule
             event.yaw=FunGhostClient.rotationManager.getRation().y;
             event.strafe=mc.player.input.leftImpulse*0.98f;
             event.forward=mc.player.input.forwardImpulse*0.98f;
+            
         }
+    }
+
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        target=null;
     }
 }

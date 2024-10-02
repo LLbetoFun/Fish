@@ -53,53 +53,49 @@ public class Target extends VModule {
         dist = Double.MAX_VALUE;
         LocalPlayer playersp = mc.player;
 
-        for (Entity player : onlyPlayer.getValBoolean() ? mc.level.players() : mc.level.entitiesForRendering()) {
+        for (Entity player : mc.level.entitiesForRendering()) {
             double d1 = mc.player.distanceTo(player);
             if (player != playersp && d1 < range.getValDouble() && d1 < dist && player.isAlive()
-                    && player instanceof LivingEntity && (invisible.getValBoolean() || !player.isInvisible())) {
+                    && player instanceof LivingEntity && (invisible.getValBoolean() || !player.isInvisible())
+                    && (player instanceof Player||!onlyPlayer.getValBoolean())) {
                 target = player;
                 dist = d1;
             }
         }
-
-        try {
-            if (antiBot.getValBoolean()) {
-                bots.clear();
-                for (Player p : mc.level.players()) {
-                    if (p == null) continue;
-                    if (Classes.EntityPlayerSP.isInstanceof(p)) continue;
-
-                    if (p.getDisplayName().getContents().startsWith(mc.player.getDisplayName().getContents().substring(1, 3))) {
-                        bots.add(p);
-                        continue;
-                    }
-                    if (mc.getConnection().getPlayerInfo(p.getUUID()) == null) {
-                        bots.add(p);
-                        continue;
-                    }
-                    if (p.isInvisible() && !invisible.getValBoolean()) {
-                        bots.add(p);
-                        continue;
-                    }
-                    if (p.getTeam() != null && mc.player.getTeam() != null && p.getTeam().isAlliedTo(mc.player.getTeam())) {
-                        bots.add(p);
-                    }
-                }
-                if (target != null && bots.contains(target)) target = null;
+        if(teams.getValBoolean()){
+            ts.clear();
+            for (Entity p : mc.level.entitiesForRendering()) {
+                if(!(p instanceof Player))continue;
+                if(p instanceof LocalPlayer)continue;
+                if(isSameTeam((LivingEntity) p))ts.add(p);
             }
-            if(teams.getValBoolean()){
-                ts.clear();
-                for (Player p : mc.level.players()) {
-                    if (p == null) continue;
-                    if(p instanceof LocalPlayer)continue;
-                    if(isSameTeam(p))ts.add(p);
-                }
-                if (target != null && ts.contains(target)) target = null;
-
+            if (target != null && ts.contains(target)){
+                System.out.println("isSameTeam:"+target.getName());
+                target = null;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        if (antiBot.getValBoolean()) {
+            bots.clear();
+            for (Entity p : mc.level.entitiesForRendering()) {
+                if (p == null) continue;
+                if(!(p instanceof Player))continue;
+                if (mc.getConnection().getPlayerInfo(p.getUUID()) == null) {
+                    bots.add(p);
+                    continue;
+                }
+                if (p.isInvisible() && !invisible.getValBoolean()) {
+                    bots.add(p);
+                    continue;
+                }
+                if (p.getTeam() != null && mc.player.getTeam() != null && p.getTeam().isAlliedTo(mc.player.getTeam())) {
+                    bots.add(p);
+                }
+            }
+            if (target != null && bots.contains(target)){
+                System.out.println("isBot:"+target.getName());
+                target = null;
+            }
         }
 
     }

@@ -104,6 +104,7 @@ public class StrafeFix extends VModule {
 
         }
         if(mc.player.input.shiftKeyDown)event.slow(0.3d);
+        if(mc.player.isUsingItem())event.slow(0.2d);
         return event;
     }
 

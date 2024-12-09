@@ -108,7 +108,6 @@ static JAVA *Java;
 
 static char* newPackage="com.fun";
 
-static bool isInjecting=false;
 char* replace(const char* source, const char* old, const char* new) {
     int source_len = strlen(source);
     int old_len = strlen(old);
@@ -416,7 +415,7 @@ extern JAVA JNICALL GetJAVA(JNIEnv *env);
 extern JNIEXPORT void JNICALL destroy
         (JNIEnv *env, jclass _){
 
-    isInjecting=false;
+
     UnHookFunctionAdress64(ExitProcess);
 
 }
@@ -506,10 +505,7 @@ extern JAVA JNICALL GetJAVA(JNIEnv *env){
 
 }
 static void My_ExitProcess(UINT code) {
-    //MessageBoxA(NULL,"EXIT","",0);
-    if(isInjecting) {
-        MessageBoxW(NULL,L"点我包关闭客户端",L"Fish",0);
-    }
+    MessageBoxA(NULL,"EXIT","",0);
 }
 extern DWORD JNICALL Inject(JAVA java){
     //MessageBoxA(NULL,"Inject","Fish",0);
@@ -580,7 +576,7 @@ extern DWORD JNICALL Inject(JAVA java){
     HookFunction64("jvm.dll","JVM_EnqueueOperation",(PROC) Hook_JVM_EnqueueOperation);
     HookFunctionAdress64((*java.jvmtiEnv)->GetLoadedClasses, HookGetLoadedClasses);
     HookFunctionAdress64(ExitProcess, My_ExitProcess);
-    isInjecting=true;
+
     return 0;
 
 }

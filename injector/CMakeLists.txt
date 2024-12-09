@@ -7,6 +7,9 @@ SET(EXECUTABLE_OUTPUT_PATH  ${PROJECT_BINARY_DIR}/../../fish)
 SET(LIBRARY_OUTPUT_PATH  ${PROJECT_BINARY_DIR}/../../fish)
 
 
+
+
+
 add_library(injector
             SHARED
         src/injector/Inject.c
